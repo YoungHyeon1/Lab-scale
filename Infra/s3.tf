@@ -9,3 +9,17 @@ resource "aws_s3_bucket" "terraform_bucket" {
     Environment = "Production"
   }
 }
+
+
+####
+# Create AI DataSet S3 bucket
+####
+
+resource "aws_s3_bucket" "ai_dataset_bucket" {
+  bucket = "silla.lab.ai.dataset"
+
+  tags = {
+    Name        = "AI Dataset Bucket"
+    Environment = "Production"
+  }
+}

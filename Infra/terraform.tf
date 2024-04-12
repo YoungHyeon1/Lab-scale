@@ -30,12 +30,3 @@ resource "aws_dynamodb_table" "terraform_state_lock" {
     type = "S"
   }
 }
-
-
-resource "aws_s3_bucket" "terraform-state" {
-  bucket = "silla.lab.terraform.state"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
