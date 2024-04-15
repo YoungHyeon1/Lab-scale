@@ -8,4 +8,3 @@ if __name__ == '__main__':
     load_dotenv()
     cralwer = LeagueCrawler()
     response = cralwer.get_league_v4()
-
