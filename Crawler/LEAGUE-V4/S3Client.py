@@ -36,5 +36,4 @@ class S3Client:
         self.s3.delete_object(Bucket=self.bucket_name, Key=key)
     
     def create_folder(self, folder_name: str):
-        print(folder_name)
         self.s3.put_object(Bucket=self.bucket_name, Key=folder_name)

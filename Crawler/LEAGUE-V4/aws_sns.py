@@ -9,15 +9,13 @@ class SNSClient:
     def __init__(self):
         self.sns = boto3.client(
             'sns', 
-            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
             region_name=os.getenv('AWS_REGION')
         )
 
-    def send_email_sns(self, subject, message):
+    def send_email_sns(self, sns_topick_arn, subject, message):
         # 메시지 발행
         response = self.sns.publish(
-            TopicArn=os.getenv('AWS_SNS_TOPIC_ARN'),
+            TopicArn=sns_topick_arn,
             Subject=subject,
             Message=message,
         )

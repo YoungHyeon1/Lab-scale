@@ -33,3 +33,8 @@ resource "aws_dynamodb_table" "terraform_state_lock" {
     type = "S"
   }
 }
+
+
+resource "aws_secretsmanager_secret" "riot_cralwer_api" {
+  name = "riot-crawler-api"
+}
