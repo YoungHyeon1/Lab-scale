@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "ap-northeast-2"
+}
 ####
 # Terraform Configuration
 # This file is used to configure the Terraform state file and the DynamoDB table to lock the state file.

@@ -4,17 +4,16 @@ resource "aws_ecs_cluster" "riot_crawler_cluster" {
 
 # ECS 태스크 정의 생성
 resource "aws_ecs_task_definition" "riot_crawler_task" {
-  family                   = "riot-cralwer-task"
-  container_definitions    = <<DEFINITION
+  family                = "riot-cralwer-task"
+  container_definitions = <<DEFINITION
     [
-        {
-            "name": "riot-crawler-container",
-            "image": "${aws_ecr_repository.riot_crawler.repository_url}:latest",
-            "cpu": 256,
-            "memory": 512,
-            "essential": true,
-            ]
-        }
+      {
+        "name": "riot-crawler-container",
+        "image": "${aws_ecr_repository.riot_crawler.repository_url}:latest",
+        "cpu": 256,
+        "memory": 512,
+        "essential": true
+      }
     ]
 DEFINITION
 }
