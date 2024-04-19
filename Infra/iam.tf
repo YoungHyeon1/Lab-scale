@@ -18,6 +18,9 @@ data "aws_iam_policy_document" "ecs_exec_policy_doc" {
       "ecr:GetDownloadUrlForLayer",
       "ecr:BatchGetImage",
       "ecr:GetRepositoryPolicy",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:CreateLogGroup",
       "s3:*"
     ]
     resources = [

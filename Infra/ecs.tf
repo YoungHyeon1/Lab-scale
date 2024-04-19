@@ -25,6 +25,14 @@ resource "aws_ecs_task_definition" "task" {
           protocol      = "tcp"
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/riot-crawler",
+          "awslogs-region"        = var.region,
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }
