@@ -21,22 +21,17 @@ data "aws_iam_policy_document" "ecs_exec_policy_doc" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
       "logs:CreateLogGroup",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
       "s3:*"
     ]
     resources = [
       "*",
       "arn:aws:s3:::silla.lab.ai.dataset/*",
+      "arn:aws:secretsmanager:ap-northeast-2:652832981770:secret:riot-crawler-api-VXE4BF"
+
     ]
     effect = "Allow"
-  }
-  statement {
-    actions = [
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret"
-    ]
-    resources = [
-      "arn:aws:secretsmanager:${var.region}:${var.account_id}:secret:${var.secrets_id}-*"
-    ]
   }
 }
 

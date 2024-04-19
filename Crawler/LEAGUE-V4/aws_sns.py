@@ -9,7 +9,6 @@ class SNSClient:
     def __init__(self):
         self.sns = boto3.client(
             'sns', 
-            region_name=os.getenv('AWS_REGION')
         )
 
     def send_email_sns(self, sns_topick_arn, subject, message):

@@ -11,7 +11,6 @@ class SecretClient():
     def __init__(self) -> None:
         self.secret_client = boto3.client(
             'secretsmanager',
-            region_name='ap-northeast-2'
         )
 
     def get_secret(self) -> dict:
