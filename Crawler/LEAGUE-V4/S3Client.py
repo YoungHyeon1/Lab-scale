@@ -11,7 +11,6 @@ class S3Client:
     def __init__(self, bucket_name: str):
         self.s3 = boto3.client(
             's3',
-            region_name=os.getenv('AWS_REGION')
         )
         self.bucket_name = bucket_name
 
