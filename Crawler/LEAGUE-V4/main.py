@@ -25,7 +25,7 @@ def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
         summoners = cralwer.get_league_v4(params)
         if summoners == []:
             break
-        s3.put_object(f'{file_path}/leagues/league_{index}.json', summoner_ids)
+        s3.put_object(f'{file_path}/leagues/league_{index}.json', str(summoners))
         summoner_ids.extend([summoner["summonerId"] for summoner in summoners])
     return summoner_ids
 
