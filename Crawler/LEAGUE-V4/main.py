@@ -60,6 +60,7 @@ if __name__ == '__main__':
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     file_path = f'{os.getenv("QUEUE")}_{os.getenv("TIER")}_{os.getenv("DIVISION")}'
     sns_client.send_email_sns(
+        topic_arn,
         'Riot Cralwer Start',
         get_email_body(current_time, f'LEAGUE-V4{file_path}')
     )
