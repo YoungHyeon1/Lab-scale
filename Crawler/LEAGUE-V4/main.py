@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     secret_key = secret_client.get_secret()
     api_key = secret_key['API_KEY']
-    topic_arn = secret_key['TOPIC_ARN']
+    topic_arn = secret_key['AWS_SNS_TOPIC_ARN']
     # AWS SNS 메시지 발행
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     file_path = f'{os.getenv("QUEUE")}_{os.getenv("TIER")}_{os.getenv("DIVISION")}'
