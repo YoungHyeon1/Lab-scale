@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     cralwer = LeagueCrawler('RGAPI-907974ad-01cd-41df-b13b-c39d7e64f63d')
     # Riot 크롤링 시작
-    summoner_ids = get_league_info(cralwer)
+    summoner_ids = get_league_info(cralwer, s3)
     for id in summoner_ids:
         puuid, raw_data = get_summoner_info(id)
         s3.put_object(f'{file_path}/{id}.json', raw_data)
