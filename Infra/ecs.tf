@@ -18,6 +18,24 @@ resource "aws_ecs_task_definition" "task" {
       cpu       = 256
       memory    = 512
       essential = true
+      environment = [
+        {
+          name  = "BUCKET_NAME",
+          value = "silla.lab.ai.dataset"
+        },
+        {
+          name  = "QUEUE",
+          value = "RANKED_SOLO_5x5"
+        },
+        {
+          name  = "TIER",
+          value = "GRANDMASTER"
+        },
+        {
+          name  = "DIVISION",
+          value = "I"
+        }
+      ],
       portMappings = [
         {
           containerPort = 80

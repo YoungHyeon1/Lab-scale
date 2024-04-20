@@ -28,11 +28,6 @@ jobs:
 
       - name: Build and push Docker image
         env:
-          QUEUE: RANKED_SOLO_5x5
-          TIER: GRANDMASTER
-          DIVISION: I
-          AWS_REGION: ap-northeast-2
-          BUCKET_NAME: silla.lab.ai.dataset
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: riot_crawler-repo
           IMAGE_TAG: latest
