@@ -4,12 +4,14 @@ import typing
 import datetime
 import structlog
 from S3Client import S3Client
-from aws_sns import SNSClient
 from dotenv import load_dotenv
 from aws_secrets_key import SecretClient
 from league_cralwer import LeagueCrawler
+from aws_sns import SNSClient, get_email_body
 
 logger = structlog.get_logger(__name__)
+
+
 # Crawling Counter
 crawling_counter = 0
 
@@ -57,10 +59,10 @@ if __name__ == '__main__':
     # AWS SNS 메시지 발행
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     file_path = f'{os.getenv("QUEUE")}_{os.getenv("TIER")}_{os.getenv("DIVISION")}'
-    # sns_client.send_email_sns(
-    #     'Riot Cralwer Start',
-    #     get_email_body(current_time, f'LEAGUE-V4{file_path}')
-    # )
+    sns_client.send_email_sns(
+        'Riot Cralwer Start',
+        get_email_body(current_time, f'LEAGUE-V4{file_path}')
+    )
 
     cralwer = LeagueCrawler(api_key)
     # Riot 크롤링 시작
@@ -89,7 +91,6 @@ if __name__ == '__main__':
                 f'{file_path}/metadata/metadata{id}.txt',
                 f'{metadata}\n{file_path}/{id}/{puuid}/{match_id}'
             )
-            raise
             crawling_counter += 1
     logger.info("크롤링이 완료되었습니다.")
     sns_client.send_email_sns(

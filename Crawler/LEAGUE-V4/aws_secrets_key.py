@@ -20,5 +20,4 @@ class SecretClient():
             )
         except ClientError as e:
             raise e
-        print(get_secret_value_response)
-        return json.dumps(get_secret_value_response['SecretString'])
+        return json.loads(get_secret_value_response['SecretString'])
