@@ -14,7 +14,7 @@ class LeagueCrawler:
         }
 
     def get_league_v4(self, params=dict):
-        time.sleep(0.2)
+        time.sleep(1.2)
         params.update(self.params)
         response = self.kr_client.get(
             f"/lol/league-exp/v4/entries/{os.getenv('QUEUE')}/"

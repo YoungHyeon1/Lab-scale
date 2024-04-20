@@ -18,7 +18,7 @@ crawling_counter = 0
 
 def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
     summoner_ids = list()
-    for index in range(0, 10000, 100):
+    for index in range(1, 1000):
         params = {
             'page': index,
         }
@@ -74,9 +74,9 @@ if __name__ == '__main__':
         get_email_body(current_time, f'LEAGUE-V4{file_path}')
     )
 
-    cralwer = LeagueCrawler(api_key)
+    cralwer = LeagueCrawler('RGAPI-907974ad-01cd-41df-b13b-c39d7e64f63d')
     # Riot 크롤링 시작
-    summoner_ids = get_league_info(cralwer, s3)
+    summoner_ids = get_league_info(cralwer)
     for id in summoner_ids:
         puuid, raw_data = get_summoner_info(id)
         s3.put_object(f'{file_path}/{id}.json', raw_data)
@@ -105,5 +105,4 @@ if __name__ == '__main__':
     sns_client.send_email_sns(
         'Riot Cralwer End',
         f'크롤링이 성공적으로 완료되었습니다. \n{crawling_counter} 개의 데이터가 크롤링 되었습니다.'
-
     )
