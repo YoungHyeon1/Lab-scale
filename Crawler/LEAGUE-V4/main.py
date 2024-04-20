@@ -16,9 +16,18 @@ logger = structlog.get_logger(__name__)
 crawling_counter = 0
 
 
-def get_league_info(cralwer: LeagueCrawler) -> typing.Tuple[list, str]:
-    summoners = cralwer.get_league_v4()
-    return [summoner["summonerId"] for summoner in summoners], str(summoners)
+def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
+    summoner_ids = list()
+    for index in range(0, 10000, 100):
+        params = {
+            'page': index,
+        }
+        summoners = cralwer.get_league_v4(params)
+        if summoners == []:
+            break
+        s3.put_object(f'{file_path}/leagues/league_{index}.json', summoner_ids)
+        summoner_ids.extend([summoner["summonerId"] for summoner in summoners])
+    return summoner_ids
 
 
 def get_summoner_info(id: str) -> typing.Tuple[str, str]:
@@ -67,8 +76,7 @@ if __name__ == '__main__':
 
     cralwer = LeagueCrawler(api_key)
     # Riot 크롤링 시작
-    summoner_ids, raw_data = get_league_info(cralwer)
-    s3.put_object(f'{file_path}/league.json', raw_data)
+    summoner_ids = get_league_info(cralwer, s3)
     for id in summoner_ids:
         puuid, raw_data = get_summoner_info(id)
         s3.put_object(f'{file_path}/{id}.json', raw_data)

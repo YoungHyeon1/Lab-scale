@@ -13,13 +13,13 @@ class LeagueCrawler:
             'api_key': api_key
         }
 
-    def get_league_v4(self):
+    def get_league_v4(self, params=dict):
         time.sleep(0.2)
-        print(self.params)
+        params.update(self.params)
         response = self.kr_client.get(
             f"/lol/league-exp/v4/entries/{os.getenv('QUEUE')}/"
             f"{os.getenv('TIER')}/{os.getenv('DIVISION')}",
-            params=self.params
+            params=params
         )
         return response.json()
 
