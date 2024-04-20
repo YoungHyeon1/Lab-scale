@@ -2,7 +2,7 @@
 # If you need more information about configurations
 # or implementing the sample code, visit the AWS docs:
 # https://aws.amazon.com/developer/language/python/
-
+import json
 import boto3
 from botocore.exceptions import ClientError
 
@@ -20,4 +20,5 @@ class SecretClient():
             )
         except ClientError as e:
             raise e
-        return get_secret_value_response['SecretString']
+        print(get_secret_value_response)
+        return json.dumps(get_secret_value_response['SecretString'])
