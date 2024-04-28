@@ -1,5 +1,6 @@
-import boto3
 import os
+import boto3
+from botocore.exceptions import ClientError
 
 
 class S3Client:
@@ -10,14 +11,15 @@ class S3Client:
     def __init__(self, bucket_name: str):
         self.s3 = boto3.client(
             's3',
-            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-            region_name=os.getenv('AWS_REGION')
         )
         self.bucket_name = bucket_name
 
     def get_object(self, key: str):
-        response = self.s3.get_object(Bucket=self.bucket_name, Key=key)
+        try:
+            response = self.s3.get_object(Bucket=self.bucket_name, Key=key)
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'NoSuchKey':
+                return None
         return response['Body'].read().decode('utf-8')
 
     def put_object(self, key: str, data: str):
@@ -29,3 +31,6 @@ class S3Client:
 
     def delete_object(self, key: str):
         self.s3.delete_object(Bucket=self.bucket_name, Key=key)
+    
+    def create_folder(self, folder_name: str):
+        self.s3.put_object(Bucket=self.bucket_name, Key=folder_name)
