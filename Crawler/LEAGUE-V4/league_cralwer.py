@@ -7,8 +7,9 @@ class LeagueCrawler:
 
     """
     def __init__(self, api_key: str):
-        self.asia_client = httpx.Client(base_url='https://asia.api.riotgames.com' )
-        self.kr_client = httpx.Client(base_url='https://kr.api.riotgames.com')
+        transport = httpx.HTTPTransport(retries=5)
+        self.asia_client = httpx.Client(base_url='https://asia.api.riotgames.com', transport=transport)
+        self.kr_client = httpx.Client(base_url='https://kr.api.riotgames.com', transport=transport)
         self.params ={
             'api_key': api_key
         }

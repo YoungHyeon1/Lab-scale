@@ -1,5 +1,5 @@
 import os
-import json
+import pytz
 import typing
 import datetime
 import structlog
@@ -14,7 +14,7 @@ logger = structlog.get_logger(__name__)
 
 # Crawling Counter
 crawling_counter = 0
-
+korea_timezone = pytz.timezone('Asia/Seoul')
 
 def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
     summoner_ids = list()
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     api_key = secret_key['API_KEY']
     topic_arn = secret_key['AWS_SNS_TOPIC_ARN']
     # AWS SNS 메시지 발행
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    current_time = datetime.datetime.now(korea_timezone).strftime("%Y-%m-%d %H:%M:%S")
     file_path = f'{os.getenv("QUEUE")}_{os.getenv("TIER")}_{os.getenv("DIVISION")}'
     sns_client.send_email_sns(
         topic_arn,
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         get_email_body(current_time, f'LEAGUE-V4{file_path}')
     )
 
-    cralwer = LeagueCrawler('RGAPI-907974ad-01cd-41df-b13b-c39d7e64f63d')
+    cralwer = LeagueCrawler(api_key)
     # Riot 크롤링 시작
     summoner_ids = get_league_info(cralwer, s3)
     for id in summoner_ids:
