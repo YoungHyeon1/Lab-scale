@@ -19,7 +19,7 @@ korea_timezone = pytz.timezone('Asia/Seoul')
 
 def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
     overlab_len = (
-        1 if s3.list_objects(f'{file_path}/leaguesa/') == 
+        1 if s3.list_objects(f'{file_path}/leagues/') == 
         None else len(s3.list_objects(f'{file_path}/leagues/'))
     )
     summoner_ids = list()
@@ -79,16 +79,22 @@ if __name__ == '__main__':
     # AWS SNS 메시지 발행
     current_time = datetime.datetime.now(korea_timezone).strftime("%Y-%m-%d %H:%M:%S")
     file_path = f'{os.getenv("QUEUE")}_{os.getenv("TIER")}_{os.getenv("DIVISION")}'
-    sns_client.send_email_sns(
-        topic_arn,
-        'Riot Cralwer Start',
-        get_email_body(current_time, f'LEAGUE-V4{file_path}')
-    )
+    # sns_client.send_email_sns(
+    #     topic_arn,
+    #     'Riot Cralwer Start',
+    #     get_email_body(current_time, f'LEAGUE-V4{file_path}')
+    # )
 
     cralwer = LeagueCrawler(api_key)
     # Riot 크롤링 시작
 
+    over_lab_s3 = [
+        prefix.get('Key').replace('.json', '') 
+        for prefix in s3.list_objects(f'{file_path}/')
+    ]
+
     summoner_ids = get_league_info(cralwer, s3)
+    summoner_ids = list(set(summoner_ids) - set(over_lab_s3))
     for id in summoner_ids:
         puuid, raw_data = get_summoner_info(id)
         s3.put_object(f'{file_path}/{id}.json', raw_data)

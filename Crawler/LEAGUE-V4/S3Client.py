@@ -26,7 +26,7 @@ class S3Client:
         self.s3.put_object(Bucket=self.bucket_name, Key=key, Body=data)
 
     def list_objects(self, prefix: str):
-        response = self.s3.list_objects_v2(Bucket=self.bucket_name, Prefix=prefix)
+        response = self.s3.list_objects_v2(Bucket=self.bucket_name, Prefix=prefix, Delimiter='/')
         return response.get('Contents')
 
     def delete_object(self, key: str):
