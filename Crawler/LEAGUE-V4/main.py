@@ -3,6 +3,7 @@ import pytz
 import typing
 import datetime
 import structlog
+import json
 from S3Client import S3Client
 from dotenv import load_dotenv
 from aws_secrets_key import SecretClient
@@ -17,8 +18,18 @@ crawling_counter = 0
 korea_timezone = pytz.timezone('Asia/Seoul')
 
 def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
+    overlab_len = (
+        1 if s3.list_objects(f'{file_path}/leaguesa/') == 
+        None else len(s3.list_objects(f'{file_path}/leagues/'))
+    )
     summoner_ids = list()
-    for index in range(1, 1000):
+
+    for index in range(1, overlab_len):
+        summoners = s3.get_object(f'{file_path}/leagues/league_{index}.json')
+        summoners = eval(summoners)
+        summoner_ids = [summoner["summonerId"] for summoner in summoners]
+
+    for index in range(overlab_len, 1000):
         params = {
             'page': index,
         }
@@ -76,6 +87,7 @@ if __name__ == '__main__':
 
     cralwer = LeagueCrawler(api_key)
     # Riot 크롤링 시작
+
     summoner_ids = get_league_info(cralwer, s3)
     for id in summoner_ids:
         puuid, raw_data = get_summoner_info(id)
