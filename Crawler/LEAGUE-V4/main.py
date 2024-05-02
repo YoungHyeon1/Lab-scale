@@ -79,11 +79,11 @@ if __name__ == '__main__':
     # AWS SNS 메시지 발행
     current_time = datetime.datetime.now(korea_timezone).strftime("%Y-%m-%d %H:%M:%S")
     file_path = f'{os.getenv("QUEUE")}_{os.getenv("TIER")}_{os.getenv("DIVISION")}'
-    # sns_client.send_email_sns(
-    #     topic_arn,
-    #     'Riot Cralwer Start',
-    #     get_email_body(current_time, f'LEAGUE-V4{file_path}')
-    # )
+    sns_client.send_email_sns(
+        topic_arn,
+        'Riot Cralwer Start',
+        get_email_body(current_time, f'LEAGUE-V4{file_path}')
+    )
 
     cralwer = LeagueCrawler(api_key)
     # Riot 크롤링 시작
@@ -97,6 +97,7 @@ if __name__ == '__main__':
     summoner_ids = list(set(summoner_ids) - set(over_lab_s3))
     for id in summoner_ids:
         puuid, raw_data = get_summoner_info(id)
+        if raw_data is None: continue
         s3.put_object(f'{file_path}/{id}.json', raw_data)
         match_ids = get_match_puuids(puuid)
         s3.put_object(f'{file_path}/{id}/{puuid}/match_ids.json', str(match_ids))
@@ -109,6 +110,7 @@ if __name__ == '__main__':
         match_ids = check_overlab_data(metadatas, match_ids)
         for match_id in match_ids:
             match_info = cralwer.get_match_info(match_id)
+            if match_info is None: continue
             s3.put_object(f'{file_path}/{id}/{puuid}/{match_id}.json', str(match_info))
 
             # s3 update metadata
