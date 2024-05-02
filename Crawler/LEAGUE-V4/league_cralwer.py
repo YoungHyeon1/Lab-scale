@@ -36,7 +36,7 @@ class LeagueCrawler:
         try:
             response = self.client[client].request(method, url, **kwargs)
             response.raise_for_status()  # 상태 코드 검증
-            return response
+            return response.json()
         except httpx.HTTPStatusError as e:
             logger.exception(f"HTTP error occurred: {e}")
         except httpx.RequestError as e:
@@ -53,7 +53,7 @@ class LeagueCrawler:
             f"{os.getenv('TIER')}/{os.getenv('DIVISION')}",
             params=params
         )
-        return response.json()
+        return response
 
     def get_summoner_v4(self, summoner_id=str):
         time.sleep(0.2)
@@ -62,7 +62,7 @@ class LeagueCrawler:
             f"/lol/summoner/v4/summoners/{summoner_id}",
             params=self.params
         )
-        return response.json()
+        return response
     
     def get_match_puuid(self, puuid=str, params=dict):
         time.sleep(1.2)
@@ -73,7 +73,7 @@ class LeagueCrawler:
             'asia',
             params=params
         )
-        return response.json()
+        return response
     
     def get_match_info(self, match_id=str):
         time.sleep(1.2)
@@ -83,4 +83,4 @@ class LeagueCrawler:
             'asia',
             params=self.params
         )
-        return response.json()
+        return response
