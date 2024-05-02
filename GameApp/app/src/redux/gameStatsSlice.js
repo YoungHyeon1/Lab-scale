@@ -20,18 +20,19 @@ const gameStatsSlice = createSlice({
     error: null,
   },
   reducers: {},
-  extraReducers: {
-    [fetchGameStats.pending]: (state) => {
-      state.loading = true;
-    },
-    [fetchGameStats.fulfilled]: (state, action) => {
-      state.stats = action.payload;
-      state.loading = false;
-    },
-    [fetchGameStats.rejected]: (state, action) => {
-      state.loading = false;
-      state.error = action.error.message;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchGameStats.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchGameStats.fulfilled, (state, action) => {
+        state.stats = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchGameStats.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 
