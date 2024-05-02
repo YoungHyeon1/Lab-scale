@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "task" {
         },
         {
           name  = "TIER",
-          value = "GRANDMASTER"
+          value = "IRON"
         },
         {
           name  = "DIVISION",
