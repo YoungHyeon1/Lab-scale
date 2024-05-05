@@ -26,6 +26,7 @@ def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
 
     for index in range(1, overlab_len):
         summoners = s3.get_object(f'{file_path}/leagues/league_{index}.json')
+        if summoners is None: continue
         summoners = eval(summoners)
         summoner_ids = [summoner["summonerId"] for summoner in summoners]
 
