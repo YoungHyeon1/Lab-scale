@@ -3,23 +3,32 @@ import { SearchBar } from "./SearchBar";
 import { GameStats } from "./GameStats";
 import PredictionResult from "./PredictionResult";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import SidebarComponent from "./SidebarComponent";
 
 const MainContainer = styled.div`
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
 `;
 
 const MainPage = () => {
+  const { stats } = useSelector((state) => state.gameStats);
+
   return (
     <MainContainer>
-      <h1>Game Stats Tracker</h1>
+      <SidebarComponent />
+      <h1>사이트 이름</h1>
       <SearchBar />
-      <GameStats />
-      <PredictionResult />
+      {stats ? (
+        <div />
+      ) : (
+        <>
+          <GameStats />
+          <PredictionResult />
+        </>
+      )}
     </MainContainer>
   );
 };

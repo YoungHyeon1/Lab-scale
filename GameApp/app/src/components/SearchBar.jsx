@@ -4,8 +4,13 @@ import { fetchGameStats } from "../redux/gameStatsSlice";
 
 const StyledInput = styled.input`
   padding: 10px;
-  margin: 10px;
+  margin: 5px;
   width: 300px;
+`;
+const TagInput = styled.input`
+  padding: 10px;
+  margin: 5px;
+  width: 100px;
 `;
 
 const StyledButton = styled.button`
@@ -19,18 +24,34 @@ const StyledButton = styled.button`
 export const SearchBar = () => {
   const dispatch = useDispatch();
   let input;
+  let tag;
 
   const handleSearch = () => {
     if (input.value) {
-      dispatch(fetchGameStats(input.value));
+      let summonerName = input.value + "#" + tag.value;
+      dispatch(fetchGameStats(summonerName));
       input.value = "";
+    }
+  };
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
   return (
     <div>
-      <StyledInput ref={(node) => (input = node)} placeholder="Summoner Name" />
-      <StyledButton onClick={handleSearch}>Search</StyledButton>
+      <StyledInput
+        ref={(node) => (input = node)}
+        placeholder="소환사 이름"
+        onKeyUp={handleKeyPress}
+      />
+      <TagInput
+        ref={(node) => (tag = node)}
+        placeholder="테그라인"
+        onKeyUp={handleKeyPress}
+      />
+      <StyledButton onClick={handleSearch}>검색</StyledButton>
     </div>
   );
 };
