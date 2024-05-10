@@ -19,7 +19,7 @@ const MainPage = () => {
   return (
     <MainContainer>
       <SidebarComponent />
-      <h1>사이트 이름</h1>
+      <h1> 이름</h1>
       <SearchBar />
       {stats ? (
         <div />
