@@ -4,22 +4,17 @@ import { fetchGameStats } from "../redux/gameStatsSlice";
 
 const StyledInput = styled.input`
   padding: 10px;
-  margin: 5px;
   width: 300px;
+
 `;
-const TagInput = styled.input`
-  padding: 10px;
-  margin: 5px;
-  width: 100px;
+const StyledButton = styled.button`
+padding: 12px 20px;
+background-color: blue;
+color: white;
+border: none;
+cursor: pointer;
 `;
 
-const StyledButton = styled.button`
-  padding: 10px 20px;
-  background-color: blue;
-  color: white;
-  border: none;
-  cursor: pointer;
-`;
 
 export const SearchBar = () => {
   const dispatch = useDispatch();
@@ -43,15 +38,11 @@ export const SearchBar = () => {
     <div>
       <StyledInput
         ref={(node) => (input = node)}
-        placeholder="소환사 이름"
+        placeholder="ex) hide on bush"
         onKeyUp={handleKeyPress}
       />
-      <TagInput
-        ref={(node) => (tag = node)}
-        placeholder="테그라인"
-        onKeyUp={handleKeyPress}
-      />
-      <StyledButton onClick={handleSearch}>검색</StyledButton>
+      
+      <StyledButton onClick={handleSearch}>Search</StyledButton>
     </div>
   );
 };

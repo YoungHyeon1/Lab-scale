@@ -10,7 +10,7 @@ const MainContainer = styled.div`
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  text-align: center;
+  text-align: center; 
 `;
 
 const MainPage = () => {
@@ -19,7 +19,7 @@ const MainPage = () => {
   return (
     <MainContainer>
       <SidebarComponent />
-      <h1> 이름</h1>
+      <h1> Recoding Of LoL</h1>
       <SearchBar />
       {stats ? (
         <div />

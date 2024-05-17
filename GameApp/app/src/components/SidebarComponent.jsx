@@ -9,7 +9,7 @@ const SidebarContainer = styled.div`
   transition: 0.5s;
   position: fixed;
   z-index: 1;
-  left: 0;
+  right: 0;
   top: 0;
 `;
 
@@ -18,7 +18,7 @@ const SidebarButton = styled.button`
   justify-content: center;
   align-items: center;
   position: fixed;
-  left: ${(props) => (props.isOpen ? "250px" : "0")};
+  right: ${(props) => (props.isOpen ? "250px" : "0")};
   top: 20px;
   width: 40px;
   height: 40px;
