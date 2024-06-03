@@ -7,11 +7,12 @@ router = APIRouter()
 
 
 @router.get("/")
-def read_items(
-    skip: int = 0, limit: int = 100
+def get_match_item(
+    gameName: str, tagLine: str = "KR1"
 ) -> Any:
     """
-    Retrieve items.
+    Search Classic Game Infomation
     """
+    print(gameName, tagLine)
     return None
 
