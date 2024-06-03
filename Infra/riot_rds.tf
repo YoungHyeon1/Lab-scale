@@ -30,20 +30,20 @@ resource "aws_security_group" "riot_rds_sg" {
 }
 # RDB free tier DB (PostgreSQL)
 resource "aws_db_instance" "riot_db" {
-    identifier = "riot-db"
-    engine = "postgres"
-    instance_class = "db.t3.micro"
-    allocated_storage = 50
-    storage_type = "gp2"
-    storage_encrypted = false
-    engine_version = "16.2"
-    publicly_accessible = false
-    skip_final_snapshot = false
-    username          = var.riot_db_username
-    password          = var.riot_db_password
-    vpc_security_group_ids = [aws_security_group.riot_rds_sg.id]
-    db_subnet_group_name = aws_db_subnet_group.riot_db_subnet_group.name
-    tags = {
-        Name = "riot-db"
-    }
+  identifier             = "riot-db"
+  engine                 = "postgres"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 50
+  storage_type           = "gp2"
+  storage_encrypted      = false
+  engine_version         = "16.2"
+  publicly_accessible    = true
+  skip_final_snapshot    = false
+  username               = var.riot_db_username
+  password               = var.riot_db_password
+  vpc_security_group_ids = [aws_security_group.riot_rds_sg.id]
+  db_subnet_group_name   = aws_db_subnet_group.riot_db_subnet_group.name
+  tags = {
+    Name = "riot-db"
+  }
 }
