@@ -26,6 +26,7 @@ def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
 
     for index in range(1, overlab_len):
         summoners = s3.get_object(f'{file_path}/leagues/league_{index}.json')
+        if summoners is None: continue
         summoners = eval(summoners)
         summoner_ids = [summoner["summonerId"] for summoner in summoners]
 
@@ -36,6 +37,8 @@ def get_league_info(cralwer: LeagueCrawler, s3: S3Client) -> list:
         summoners = cralwer.get_league_v4(params)
         if summoners == []:
             break
+        if summoners is None:
+            continue
         s3.put_object(f'{file_path}/leagues/league_{index}.json', str(summoners))
         summoner_ids.extend([summoner["summonerId"] for summoner in summoners])
     return summoner_ids
@@ -79,28 +82,32 @@ if __name__ == '__main__':
     # AWS SNS 메시지 발행
     current_time = datetime.datetime.now(korea_timezone).strftime("%Y-%m-%d %H:%M:%S")
     file_path = f'{os.getenv("QUEUE")}_{os.getenv("TIER")}_{os.getenv("DIVISION")}'
-    sns_client.send_email_sns(
-        topic_arn,
-        'Riot Cralwer Start',
-        get_email_body(current_time, f'LEAGUE-V4{file_path}')
-    )
+    # sns_client.send_email_sns(
+    #     topic_arn,
+    #     'Riot Cralwer Start',
+    #     get_email_body(current_time, f'LEAGUE-V4{file_path}')
+    # )
 
     cralwer = LeagueCrawler(api_key)
     # Riot 크롤링 시작
 
-    over_lab_s3 = [
-        prefix.get('Key').replace('.json', '') 
-        for prefix in s3.list_objects(f'{file_path}/')
-    ]
+    prefix = s3.list_objects(f'{file_path}/')
+    if prefix is None:
+        over_lab_s3 = []
+    else:
+        over_lab_s3 = [
+            prefix.get('Key').replace('.json', '') 
+            for prefix in s3.list_objects(f'{file_path}/')
+        ]
 
     summoner_ids = get_league_info(cralwer, s3)
     summoner_ids = list(set(summoner_ids) - set(over_lab_s3))
     for id in summoner_ids:
         puuid, raw_data = get_summoner_info(id)
         if raw_data is None: continue
-        s3.put_object(f'{file_path}/{id}.json', raw_data)
+        s3.put_object(f'{file_path}/summoner_ids/{id}.json', raw_data)
         match_ids = get_match_puuids(puuid)
-        s3.put_object(f'{file_path}/{id}/{puuid}/match_ids.json', str(match_ids))
+        s3.put_object(f'{file_path}/match_ids/{id}_{puuid}/match_ids.json', str(match_ids))
         
         # 중복 데이터 체크
         metadatas = s3.get_object(f'{file_path}/metadata/metadata{id}.txt')
@@ -111,10 +118,11 @@ if __name__ == '__main__':
         for match_id in match_ids:
             match_info = cralwer.get_match_info(match_id)
             if match_info is None: continue
-            s3.put_object(f'{file_path}/{id}/{puuid}/{match_id}.json', str(match_info))
+            encode_data = json.dumps(match_info)
+            s3.put_object(f'result/{file_path}/{id}_{puuid}_{match_id}.json', encode_data)
 
             # s3 update metadata
-            logger.info(f'{file_path}/{id}/{puuid}/{match_id}')
+            logger.info(f'result/{file_path}/{id}_{puuid}_{match_id}')
             metadata = s3.get_object(f'{file_path}/metadata/metadata{id}.txt')
             s3.put_object(
                 f'{file_path}/metadata/metadata{id}.txt',
