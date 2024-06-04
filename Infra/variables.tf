@@ -26,8 +26,22 @@ variable "account_id" {
 
 }
 
-variable "secrets_id" {
-  description = "The ID of the secret"
-  type        = string
+variable "db_subnet_id" {
+  description = "The ID of the subnet in the availability zone 2b"
+  type       = list(string)
+}
 
+variable "riot_db_username" {
+  description = "riot DB username"
+  type       = string
+}
+
+variable "riot_db_password" {
+  description = "roptr_db_password"
+  type       = string
+}
+
+variable "subnet_id_2b" {
+  description = "The ID of the subnet in the availability zone 2b"
+  type        = string
 }
