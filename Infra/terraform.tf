@@ -1,3 +1,6 @@
+provider "aws" {
+  region = "ap-northeast-2"
+}
 ####
 # Terraform Configuration
 # This file is used to configure the Terraform state file and the DynamoDB table to lock the state file.
@@ -32,10 +35,6 @@ resource "aws_dynamodb_table" "terraform_state_lock" {
 }
 
 
-resource "aws_s3_bucket" "terraform-state" {
-  bucket = "silla.lab.terraform.state"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+resource "aws_secretsmanager_secret" "riot_cralwer_api" {
+  name = "riot-crawler-api"
 }
