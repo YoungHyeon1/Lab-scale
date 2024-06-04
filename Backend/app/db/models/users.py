@@ -13,3 +13,4 @@ class Users(Model):
     incative = sa.Column(sa.Boolean, nullable=False)
     fresh_blood = sa.Column(sa.Boolean, nullable=False)
     hot_streak = sa.Column(sa.Boolean, nullable=False)
+    user_matches = sa.orm.relationship('UserMatches', backref='users')

@@ -9,3 +9,4 @@ class Matches(Model):
     game_mode = sa.Column(sa.String(50), nullable=False)
     duration = sa.Column(sa.Integer, nullable=False)
     game_version = sa.Column(sa.String(50), nullable=False)
+    match_matches = sa.orm.relationship('MatchMatches', backref='matches')
