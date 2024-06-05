@@ -14,6 +14,7 @@ boto3 = "^1.34.118"
 python-dotenv = "^1.0.1"
 psycopg2 = "^2.9.9"
 lib-commons = {path = "../lib-commons"}
+pandas = "^2.2.2"
 
 [build-system]
 requires = ["poetry-core"]
