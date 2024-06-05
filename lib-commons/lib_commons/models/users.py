@@ -2,8 +2,10 @@ from .base import Model
 import sqlalchemy as sa
 
 class Users(Model):
-    sommoner_id = sa.Column(sa.String(78),primary_key=True, nullable=False)
-    league_id = sa.Column(sa.String(78), nullable=False)
+    __tablename__ = 'users'
+    puuid = sa.Column(sa.String(78), nullable=False, primary_key=True)
+    sommoner_id = sa.Column(sa.String(78), index=True, nullable=False)
+    league_id = sa.Column(sa.String(78), nullable=False, index=True)
     tier = sa.Column(sa.String(50), nullable=False)
     rank = sa.Column(sa.String(50), nullable=False)
     leaguePoints = sa.Column(sa.Integer, nullable=False)
