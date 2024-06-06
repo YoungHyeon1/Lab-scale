@@ -15,6 +15,9 @@ python-dotenv = "^1.0.1"
 psycopg2 = "^2.9.9"
 lib-commons = {path = "../lib-commons"}
 pandas = "^2.2.2"
+pyathena = "^3.8.3"
+ipykernel = "^6.29.4"
+chompjs = "^1.2.3"
 
 [build-system]
 requires = ["poetry-core"]

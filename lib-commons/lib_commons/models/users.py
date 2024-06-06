@@ -1,5 +1,6 @@
 from .base import Model
 import sqlalchemy as sa
+from .user_matches import user_matches
 
 class Users(Model):
     __tablename__ = 'users'
@@ -15,4 +16,4 @@ class Users(Model):
     incative = sa.Column(sa.Boolean, nullable=True)
     fresh_blood = sa.Column(sa.Boolean, nullable=True)
     hot_streak = sa.Column(sa.Boolean, nullable=True)
-    user_matches = sa.orm.relationship('UserMatches', backref='users')
+    matches = sa.orm.relationship("Matches", secondary=user_matches, back_populates='users')
