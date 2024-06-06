@@ -28,7 +28,6 @@ def import_submodules(package, recursive=True):
     return results
 
 import_submodules('lib_commons.models')
-print(Model.metadata)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
