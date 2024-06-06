@@ -5,7 +5,12 @@ import MainPage from "./components/MainPage";
 import GlobalStyle from "./components/GlobalStyle"; // 스타일링을 위한 글로벌 스타일
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Research from "./components/Research";
+import CardList from "./components/testcomponent";
+
+
+
 function App() {
+
   return (
     <Router>
       <Provider store={store}>
@@ -13,6 +18,8 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/about" element={<Research />} />
+          <Route path="/cards" element={<CardList />} /> {/* CardList 라우트 추가 */}
+         
 
         </Routes>
       </Provider>

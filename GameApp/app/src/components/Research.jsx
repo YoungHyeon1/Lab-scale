@@ -1,34 +1,40 @@
 import SidebarComponent from "./SidebarComponent";
-import { SearchBar } from "./SearchBar";
+// import { SearchBar } from "./SearchBar";
 import React, {useState} from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-const CardContainer = styled.div`
+
+
+
+const ImageContainer = styled.div`
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #000;
+`;
+
+const Image = styled.img`
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+`;
+const CardContainer = styled.div`
+  
+  width: 100%;
 `;
 
 const Card = styled.div`
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  width: 200px;
-  margin: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  width: 70%;
+  justify-content: center;
 
-  &:hover {
-    transform: translateY(-5px);
-  }
 `;
-
 
 const CardHeader = styled.div`
   background: #007bff;
   color: #fff;
-  padding: 10px;
+  padding: 0.5%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   font-size: 1.2em;
@@ -70,7 +76,6 @@ const Research = () => {
     return(
         <>
         <SidebarComponent />
-        <SearchBar onError={handleSearchError} />
         <div className="profile-bar">
             <img src="profile.jpg" alt="" className="profile-image" />
             <span className="profile-name">John Doe</span>

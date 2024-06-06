@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { SearchBar } from "./SearchBar";
+import  SearchBar  from "./SearchBar";
 import { GameStats } from "./GameStats";
 import PredictionResult from "./PredictionResult";
 import styled from "styled-components";
