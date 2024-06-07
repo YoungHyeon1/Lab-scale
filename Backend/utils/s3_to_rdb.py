@@ -46,10 +46,16 @@ engine = create_engine(postgresql_url)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-count = 0
 utc_zone = pytz.utc
+matches_id = {int(row.match_id) for row in session.query(Matches.match_id).all()}
+matches_id = set(matches_id)
+
 for processed_data in stream_s3_file(bucket, key):
     # 처리된 데이터를 사용하여 여기에서 추가 작업을 수행
+    if processed_data["info"]["gameId"] in matches_id:
+        print("Already exist")
+        continue
+
     user_list = list()
     for user_info in processed_data["info"]["participants"]:
         # overlab check
@@ -77,12 +83,10 @@ for processed_data in stream_s3_file(bucket, key):
     try:
         session.add(new_matches)
         session.commit()
-        count = count + 1
-        print(count)
+        print(processed_data["info"]["gameId"])
     except UniqueViolation:
         print("ERROR")
         session.rollback()
     except Exception as e:
         print(e)
-    finally:
-        session.close()
+session.close()
