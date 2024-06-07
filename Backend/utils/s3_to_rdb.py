@@ -45,8 +45,6 @@ def stream_s3_file(bucket, key):
 engine = create_engine(postgresql_url)
 Session = sessionmaker(bind=engine)
 session = Session()
-overlab = session.query(Matches).all()
-overlab_list = [over.match_id for over in overlab]
 
 count = 0
 utc_zone = pytz.utc
@@ -55,14 +53,13 @@ for processed_data in stream_s3_file(bucket, key):
     user_list = list()
     for user_info in processed_data["info"]["participants"]:
         # overlab check
-        if user_info["puuid"] in overlab_list:
-            continue
-        else:
-            overlab_list.append(user_info["puuid"])
-            user_list.append(Users(
+        user = session.query(Users).filter_by(puuid=user_info['puuid']).one_or_none()
+        if user is None:
+            user = (Users(
                 puuid=user_info["puuid"],
                 summoner_id=user_info["summonerId"]
             ))
+        user_list.append(user)
     new_matches = Matches(
         match_id=processed_data["info"]["gameId"],
         create_timestamp=datetime.fromtimestamp(processed_data["info"]["gameCreation"] / 1000, utc_zone),
@@ -80,7 +77,8 @@ for processed_data in stream_s3_file(bucket, key):
     try:
         session.add(new_matches)
         session.commit()
-        print(count=count+1)
+        count = count + 1
+        print(count)
     except UniqueViolation:
         print("ERROR")
         session.rollback()
