@@ -1,7 +1,6 @@
 import boto3
 import chompjs
-from lib_commons.models.match import  Matches
-from lib_commons.models.users import Users
+from lib_commons.models.user_matches import Users, Matches
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from datetime import datetime

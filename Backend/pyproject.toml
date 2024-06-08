@@ -18,6 +18,7 @@ pandas = "^2.2.2"
 pyathena = "^3.8.3"
 ipykernel = "^6.29.4"
 chompjs = "^1.2.3"
+psycopg = {extras = ["binary"], version = "^3.1.19"}
 
 [build-system]
 requires = ["poetry-core"]
