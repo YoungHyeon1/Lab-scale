@@ -1,13 +1,12 @@
-import React, {useState} from "react";
-import  SearchBar  from "./SearchBar";
+import React, { useState } from "react";
+import SearchBar from "./SearchBar";
 import { GameStats } from "./GameStats";
 import PredictionResult from "./PredictionResult";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import SidebarComponent from "./SidebarComponent";
-import { Button, Modal } from 'react-bootstrap';
-import recodingOfLolImage from './assets/Recoding Of LoL 이미지.webp';
-
+import { Button, Modal } from "react-bootstrap";
+import recodingOfLolImage from "./assets/Recoding Of LoL 이미지.webp";
 
 const StyledModal = styled(Modal)`
   .modal-dialog {
@@ -59,7 +58,7 @@ const MainContainer = styled.div`
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  text-align: center; 
+  text-align: center;
 `;
 
 const StyledImage = styled.img`
@@ -72,20 +71,20 @@ const StyledImage = styled.img`
 
 const MainPage = () => {
   const [showModal, setShowModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const { stats } = useSelector((state) => state.gameStats);
   const handleSearchError = (message) => {
     setErrorMessage(message);
     setShowModal(true);
   };
 
-const handleClose = () => setShowModal(false);
+  const handleClose = () => setShowModal(false);
 
   return (
     <MainContainer>
       <SidebarComponent />
       <StyledImage src={recodingOfLolImage} alt="Recoding Of LoL" />
-      <SearchBar onError={handleSearchError} />
+      <SearchBar />
       {stats ? (
         <div />
       ) : (

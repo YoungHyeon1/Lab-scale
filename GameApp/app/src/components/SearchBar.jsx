@@ -55,7 +55,7 @@ const SearchInput = styled.input`
   color: #212529;
   flex-grow: 1;
   &::placeholder {
-  color: #adb5bd;
+    color: #adb5bd;
   }
 `;
 
@@ -89,7 +89,6 @@ const Label = styled.span`
   margin-right: 10px;
 `;*/
 
-
 // const SearchBar = ({ onError }) => {
 //   const dispatch = useDispatch();
 //   const navigate = useNavigate();
@@ -97,8 +96,6 @@ const Label = styled.span`
 
 //   let input;
 //   let tag;
-
- 
 
 //   const handleSearchChange = (event) => {
 //     setSearchTerm(event.target.value);
@@ -108,10 +105,8 @@ const Label = styled.span`
 //     // onSearch({ region, searchTerm });
 //   };
 
-
-
 //   const handleSearch = () => {
-    
+
 //     if (input.value) {
 //       let summonerName = input.value + "#" + tag.value;
 //       dispatch(fetchGameStats(summonerName));
@@ -139,19 +134,23 @@ const Label = styled.span`
 //         placeholder="플레이어 이름 + KR1"
 //         onKeyUp={handleKeyPress}
 //       />
-      
+
 //       <StyledButton onClick={handleSearch}>Search</StyledButton>
 //     </div>
 //   );
-  
+
 // };
 
-const SearchBar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchBar = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (searchTerm) => {
+    navigate(`/research/${searchTerm}`);
+  };
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
-    onSearch(event.target.value);
   };
 
   return (
@@ -163,7 +162,7 @@ const SearchBar = ({ onSearch }) => {
         value={searchTerm}
         onChange={handleChange}
       />
-      <SearchButton>검색</SearchButton>
+      <SearchButton onClick={() => handleSearch(searchTerm)}>검색</SearchButton>
     </SearchContainer>
   );
 };
