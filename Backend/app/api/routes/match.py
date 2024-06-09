@@ -13,17 +13,20 @@ asia_client = httpx.Client(base_url='https://asia.api.riotgames.com/')
 def get_match_item(
     session: SessionDep,
     puuid: str,
+    index: int = 1,
     limits: int = 5
 ) -> Any:
     """
     Search Classic Game Infomation
     """
+    offset_value = (index - 1) * limits
     matches = (
         session.query(Matches)
         .join(user_matches)
         .join(Users)
         .filter(Users.puuid == puuid)
         .order_by(Matches.create_timestamp.desc())
+        .offset(offset_value)
         .limit(limits)
         .all()
     )

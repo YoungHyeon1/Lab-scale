@@ -18,7 +18,7 @@ engine = create_engine(postgresql_url)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-puuids = {row.puuid for row in session.query(Users).limit(10000)}
+puuids = {row.puuid for row in session.query(Users).where(Users.accountId.is_(None)).limit(10000)}
 
 for i in puuids:
     time.sleep(1.2)
