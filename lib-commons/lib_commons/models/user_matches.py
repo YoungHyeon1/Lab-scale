@@ -8,7 +8,15 @@ user_matches = sa.Table('user_matches', Model.metadata,
 
 user_leagues = sa.Table('user_leagues', Model.metadata,
     sa.Column('summoner_id', sa.ForeignKey('users.summoner_id'), primary_key=True),
-    sa.Column('league_id', sa.ForeignKey('league.league_id'), primary_key=True)
+    sa.Column('league_id', sa.ForeignKey('league.league_id'), primary_key=True),
+    sa.Column('league_points', sa.Integer),
+    sa.Column('rank', sa.String(10)),
+    sa.Column('wins', sa.Integer),
+    sa.Column('losses', sa.Integer),
+    sa.Column('veteran', sa.Boolean),
+    sa.Column('inactive', sa.Boolean),
+    sa.Column('fresh_blood', sa.Boolean),
+    sa.Column('hot_streak', sa.Boolean)
 )
 
 class Matches(Model):
@@ -45,12 +53,5 @@ class League(Model):
     league_id = sa.Column(sa.String(78), primary_key=True, nullable=False)
     queue_type = sa.Column(sa.String(50), nullable=False)
     tier = sa.Column(sa.String(50), nullable=True)
-    rank = sa.Column(sa.String(50), nullable=True)
-    league_points = sa.Column(sa.Integer, nullable=True)
-    wins = sa.Column(sa.Integer, nullable=True)
-    losses = sa.Column(sa.Integer, nullable=True)
-    veteran = sa.Column(sa.Boolean, nullable=True)
-    inactive = sa.Column(sa.Boolean, nullable=True)
-    fresh_blood = sa.Column(sa.Boolean, nullable=True)
-    hot_streak = sa.Column(sa.Boolean, nullable=True)
+    name = sa.Column(sa.String(255), nullable=True)
     summoner = sa.orm.relationship("Users", secondary=user_leagues, back_populates="league")
