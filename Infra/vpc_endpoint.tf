@@ -40,3 +40,17 @@ resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
   private_dns_enabled = true
   security_group_ids  = [aws_security_group.sg.id]
 }
+
+
+# Private Subnet
+resource "aws_subnet" "private_subnet" {
+  vpc_id            = var.vpc_id
+  cidr_block        = var.cidr_private_subnet
+  availability_zone = var.availability_zone
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "Private Subnet"
+  }
+}
+

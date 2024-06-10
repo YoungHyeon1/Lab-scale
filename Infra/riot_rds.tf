@@ -33,7 +33,7 @@ resource "aws_db_instance" "riot_db" {
   identifier             = "riot-db"
   engine                 = "postgres"
   instance_class         = "db.t3.micro"
-  allocated_storage      = 80
+  allocated_storage      = 50
   storage_type           = "gp2"
   storage_encrypted      = false
   engine_version         = "16.2"

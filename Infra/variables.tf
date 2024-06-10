@@ -45,3 +45,15 @@ variable "subnet_id_2b" {
   description = "The ID of the subnet in the availability zone 2b"
   type        = string
 }
+
+
+variable "cidr_private_subnet" {
+  description = "CIDR block for the private subnet"
+  default     = "172.31.0.0/16" # 예시 CIDR, 필요에 따라 변경
+}
+
+
+variable "availability_zone" {
+  description = "Availability Zone to create the resources"
+  default     = "ap-northeast-2a" # 예시 AZ, 필요에 따라 변경
+}
