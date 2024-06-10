@@ -26,6 +26,7 @@ const Research = () => {
       deaths: 1,
       assists: 5,
       date: "2023-06-01",
+      detail: []
     },
     {
       id: 2,

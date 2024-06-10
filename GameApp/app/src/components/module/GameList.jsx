@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import GameModal from "./GameModal";
-
+/*
 const spin = keyframes`
     0% {
       --rotate: 0deg;
@@ -92,6 +92,11 @@ const GameList = ({ games }) => {
       </GameListContainer>
     </>
   );
-};
+};*/
 
+
+const MatchDetailModal = styled(GameModal)`
+  /* GameModal 스타일을 기반으로 필요한 추가 스타일 적용 */
+  width: 800px; /* 모달 창 크기 조정 */
+`;
 export default GameList;

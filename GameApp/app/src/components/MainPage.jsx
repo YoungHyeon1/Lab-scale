@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import SidebarComponent from "./SidebarComponent";
 import { Button, Modal } from "react-bootstrap";
-import recodingOfLolImage from "./assets/Recoding Of LoL 이미지.webp";
+import recodingOfLolImage from "./assets/Recoding Of LoL 이미지.png";
 
 const StyledModal = styled(Modal)`
   .modal-dialog {
