@@ -49,7 +49,7 @@ class Settings(BaseSettings):
     POSTGRES_SERVER: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
-    POSTGRES_DB="postgres"
+    POSTGRES_DB: str ="postgres"
     POSTGRES_PORT:int =5432
     API_KEY: str
 
