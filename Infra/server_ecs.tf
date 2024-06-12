@@ -63,3 +63,19 @@ resource "aws_security_group_rule" "fastapi_traafic" {
   security_group_id = aws_security_group.sg_fastapi.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
+resource "aws_security_group_rule" "fastapi_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.sg_fastapi.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+resource "aws_security_group_rule" "fastapi_http" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = aws_security_group.sg_fastapi.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
