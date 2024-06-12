@@ -1,7 +1,9 @@
+import boto3
+import json
 import secrets
 from pydantic_core import MultiHostUrl
 from typing import Annotated, Any, Literal
-from .aws_secrets_key import SecretClient
+from botocore.exceptions import ClientError
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict
@@ -21,7 +23,22 @@ def parse_cors(v: Any) -> list[str] | str:
         return v
     raise ValueError(v)
 
-secrets_client = SecretClient()
+
+class SecretClient():
+    def __init__(self) -> None:
+        self.secret_client = boto3.client(
+            'secretsmanager',
+        )
+
+    def get_secret(self) -> dict:
+        try:
+            get_secret_value_response = self.secret_client.get_secret_value(
+                SecretId='riot-crawler-api'
+            )
+        except ClientError as e:
+            raise e
+        return json.loads(get_secret_value_response['SecretString'])
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -33,6 +50,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     DOMAIN: str = "localhost"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
+    secrets_client = SecretClient()
 
     @computed_field  # type: ignore[misc]
     @property
