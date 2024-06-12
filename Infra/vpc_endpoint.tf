@@ -43,10 +43,10 @@ resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
 
 
 # Private Subnet
-resource "aws_subnet" "private_subnet" {
+resource "aws_subnet" "private_subnet_2b" {
   vpc_id            = var.vpc_id
-  cidr_block        = var.cidr_private_subnet
-  availability_zone = var.availability_zone
+  cidr_block        = var.cidr_private_subnet_2b
+  availability_zone = var.availability_2b_zone
   map_public_ip_on_launch = false
 
   tags = {
@@ -54,3 +54,15 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
+
+# Private Subnet
+resource "aws_subnet" "private_subnet_2a" {
+  vpc_id            = var.vpc_id
+  cidr_block        = var.cird_private_subnet_2a
+  availability_zone = var.availability_2a_zone
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "Private Subnet"
+  }
+}

@@ -47,13 +47,24 @@ variable "subnet_id_2b" {
 }
 
 
-variable "cidr_private_subnet" {
+variable "cidr_private_subnet_2b" {
   description = "CIDR block for the private subnet"
-  default     = "172.31.32.0/24" # 예시 CIDR, 필요에 따라 변경
+  default     = "172.31.32.0/24"
+}
+
+variable "cird_private_subnet_2a" {
+  description = "CIDR block for the private subnet"
+  default     = "172.31.33.0/24"
+}
+
+variable "availability_2a_zone" {
+  description = "value of the availability zone"
+  default     = "ap-northeast-2a"
 }
 
 
-variable "availability_zone" {
+variable "availability_2b_zone" {
   description = "Availability Zone to create the resources"
-  default     = "ap-northeast-2b" # 예시 AZ, 필요에 따라 변경
+  default     = "ap-northeast-2b"
 }
+

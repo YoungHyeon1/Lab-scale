@@ -1,3 +1,5 @@
+#Cralwer ECS 생성
+
 resource "aws_ecs_cluster" "riot_crawler_cluster" {
   name = "riot-crawler-cluster"
 }
