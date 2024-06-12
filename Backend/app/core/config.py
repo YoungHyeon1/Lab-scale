@@ -39,6 +39,7 @@ class SecretClient():
             raise e
         return json.loads(get_secret_value_response['SecretString'])
 
+secrets_client = SecretClient()
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -50,7 +51,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     DOMAIN: str = "localhost"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
-    secrets_client = SecretClient()
 
     @computed_field  # type: ignore[misc]
     @property
@@ -89,7 +89,6 @@ class Settings(BaseSettings):
     # SMTP_HOST: str | None = None
     # SMTP_USER: str | None = None
     # SMTP_PASSWORD: str | None = None
-
 
 
 settings = Settings()  # type: ignore
