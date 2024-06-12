@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB="postgres"
-    POSTGRES_PORT=5432
+    POSTGRES_PORT:int =5432
     API_KEY: str
 
     @computed_field  # type: ignore[misc]
