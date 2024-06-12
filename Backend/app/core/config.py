@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     )
     secret_client = boto3.client('secretsmanager')
     get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawler-api')
-    secrets = json.loads(get_secret_value_response['SecretString'])
+    secrets_aws = json.loads(get_secret_value_response['SecretString'])
 
 
     API_V1_STR: str = "/v1"
@@ -51,13 +51,13 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
-    print(secrets["POSTGRES_SERVER"])
-    POSTGRES_SERVER=secrets["POSTGRES_SERVER"]
-    POSTGRES_USER=secrets["POSTGRES_USER"]
-    POSTGRES_PASSWORD=secrets["POSTGRES_PASSWORD"]
+    print(secrets_aws["POSTGRES_SERVER"])
+    POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"]
+    POSTGRES_USER=secrets_aws["POSTGRES_USER"]
+    POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"]
     POSTGRES_DB='postgres'
     POSTGRES_PORT=5432
-    API_KEY=secrets["API_KEY"]
+    API_KEY=secrets_aws["API_KEY"]
 
     @computed_field  # type: ignore[misc]
     @property
