@@ -28,11 +28,6 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env", env_ignore_empty=True, extra="ignore"
     )
-    secret_client = boto3.client('secretsmanager')
-    get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawler-api')
-    secrets_aws = json.loads(get_secret_value_response['SecretString'])
-
-
     API_V1_STR: str = "/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
@@ -51,13 +46,12 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
-    print(secrets_aws["POSTGRES_SERVER"])
-    POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"]
-    POSTGRES_USER=secrets_aws["POSTGRES_USER"]
-    POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"]
+    POSTGRES_SERVER: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
     POSTGRES_DB='postgres'
     POSTGRES_PORT=5432
-    API_KEY=secrets_aws["API_KEY"]
+    API_KEY: str
 
     @computed_field  # type: ignore[misc]
     @property
@@ -77,7 +71,15 @@ class Settings(BaseSettings):
     # SMTP_HOST: str | None = None
     # SMTP_USER: str | None = None
     # SMTP_PASSWORD: str | None = None
+secret_client = boto3.client('secretsmanager')
+get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawler-api')
+secrets_aws = json.loads(get_secret_value_response['SecretString'])
 
 
-settings = Settings()  # type: ignore
+settings = Settings(
+    POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"],
+    POSTGRES_USER=secrets_aws["POSTGRES_USER"],
+    POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"],
+    API_KEY=secrets_aws["API_KEY"]
+)  # type: ignore
 
