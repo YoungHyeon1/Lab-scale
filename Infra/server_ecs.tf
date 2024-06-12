@@ -38,3 +38,28 @@ resource "aws_ecs_task_definition" "riot_server_task" {
     }
   ])
 }
+
+resource "aws_security_group" "sg_fastapi" {
+  name        = "fastapi_traafic"
+  description = "Allow all inbound traffic"
+  vpc_id      = var.vpc_id
+}
+
+resource "aws_security_group_rule" "allow_rdb_from_fastapi" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.sg_fastapi.id
+  security_group_id        = aws_security_group.riot_rds_sg.id
+  description              = "Allow FastAPI server to access RDB on port 5432"
+}
+
+resource "aws_security_group_rule" "fastapi_traafic" {
+  type              = "ingress"
+  from_port         = 8000
+  to_port           = 8000
+  protocol          = "tcp"
+  security_group_id = aws_security_group.sg_fastapi.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}

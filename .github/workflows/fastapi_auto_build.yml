@@ -1,10 +1,11 @@
-name: Crawler Deploy to ECR
+name: FastAPI Deploy to ECR
 
 on:
   push:
     branches:
       - master
       - develop
+      - feature/*
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -27,9 +28,9 @@ jobs:
       - name: Build and push Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: riot_crawler-repo
+          ECR_REPOSITORY: riot-api-server-repo
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        working-directory: Crawler/LEAGUE-V4
+        working-directory: /Backend/app/app/

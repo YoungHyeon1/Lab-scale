@@ -6,14 +6,15 @@ resource "aws_eip" "nat" {
 }
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.nat.id
-    subnet_id     = var.db_subnet_id[1]
+  subnet_id     = var.db_subnet_id[1]
   tags = {
     Name = "NAT Gateway"
   }
 }
 # NAT Gateway를 사용하는 라우팅 테이블
 resource "aws_route_table" "private_route_table" {
-  vpc_id = var.vpc_id
+  vpc_id     = var.vpc_id
+  depends_on = [aws_nat_gateway.nat_gateway]
 
   route {
     cidr_block = "0.0.0.0/0"

@@ -1,18 +1,18 @@
 import secrets
-import warnings
+from pydantic_core import MultiHostUrl
 from typing import Annotated, Any, Literal
-
+from utils.aws_secrets_key import SecretClient
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict
+)
 from pydantic import (
     AnyUrl,
     BeforeValidator,
-    HttpUrl,
     PostgresDsn,
-    computed_field,
-    model_validator,
+    computed_field
 )
-from pydantic_core import MultiHostUrl
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing_extensions import Self
+
 
 def parse_cors(v: Any) -> list[str] | str:
     if isinstance(v, str) and not v.startswith("["):
@@ -21,6 +21,7 @@ def parse_cors(v: Any) -> list[str] | str:
         return v
     raise ValueError(v)
 
+secrets_client = SecretClient()
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -45,12 +46,12 @@ class Settings(BaseSettings):
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
 
-    POSTGRES_SERVER: str
-    POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str = ""
-    API_KEY: str
+    POSTGRES_SERVER=secrets_client["POSTGRES_SERVER"]
+    POSTGRES_USER=secrets_client["POSTGRES_USER"]
+    POSTGRES_PASSWORD=secrets_client["POSTGRES_PASSWORD"]
+    POSTGRES_DB='postgres'
+    POSTGRES_PORT=5432
+    API_KEY=secrets_client["API_KEY"]
 
     @computed_field  # type: ignore[misc]
     @property

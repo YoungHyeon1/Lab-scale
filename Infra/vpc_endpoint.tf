@@ -1,24 +1,24 @@
 # ECR Endpoint
 
-resource "aws_vpc_endpoint" "ecr_api_endpoint" {
-  vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.region}.ecr.api"
-  vpc_endpoint_type = "Interface"
+# resource "aws_vpc_endpoint" "ecr_api_endpoint" {
+#   vpc_id            = var.vpc_id
+#   service_name      = "com.amazonaws.${var.region}.ecr.api"
+#   vpc_endpoint_type = "Interface"
 
-  subnet_ids          = var.subnet_ids
-  private_dns_enabled = true
-  security_group_ids  = [aws_security_group.sg.id]
-}
+#   subnet_ids          = var.subnet_ids
+#   private_dns_enabled = true
+#   security_group_ids  = [aws_security_group.sg.id]
+# }
 
-resource "aws_vpc_endpoint" "ecr_dkr_endpoint" {
-  vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.region}.ecr.dkr"
-  vpc_endpoint_type = "Interface"
+# resource "aws_vpc_endpoint" "ecr_dkr_endpoint" {
+#   vpc_id            = var.vpc_id
+#   service_name      = "com.amazonaws.${var.region}.ecr.dkr"
+#   vpc_endpoint_type = "Interface"
 
-  subnet_ids          = var.subnet_ids
-  private_dns_enabled = true
-  security_group_ids  = [aws_security_group.sg.id]
-}
+#   subnet_ids          = var.subnet_ids
+#   private_dns_enabled = true
+#   security_group_ids  = [aws_security_group.sg.id]
+# }
 
 
 # S3 Endpoint
@@ -30,23 +30,23 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   route_table_ids = [var.route_table_id]
 }
 
-# Secrets Manager Endpoint
-resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
-  vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.region}.secretsmanager"
-  vpc_endpoint_type = "Interface"
+# # Secrets Manager Endpoint
+# resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
+#   vpc_id            = var.vpc_id
+#   service_name      = "com.amazonaws.${var.region}.secretsmanager"
+#   vpc_endpoint_type = "Interface"
 
-  subnet_ids          = var.subnet_ids
-  private_dns_enabled = true
-  security_group_ids  = [aws_security_group.sg.id]
-}
+#   subnet_ids          = var.subnet_ids
+#   private_dns_enabled = true
+#   security_group_ids  = [aws_security_group.sg.id]
+# }
 
 
 # Private Subnet
 resource "aws_subnet" "private_subnet_2b" {
-  vpc_id            = var.vpc_id
-  cidr_block        = var.cidr_private_subnet_2b
-  availability_zone = var.availability_2b_zone
+  vpc_id                  = var.vpc_id
+  cidr_block              = var.cidr_private_subnet_2b
+  availability_zone       = var.availability_2b_zone
   map_public_ip_on_launch = false
 
   tags = {
@@ -57,9 +57,9 @@ resource "aws_subnet" "private_subnet_2b" {
 
 # Private Subnet
 resource "aws_subnet" "private_subnet_2a" {
-  vpc_id            = var.vpc_id
-  cidr_block        = var.cird_private_subnet_2a
-  availability_zone = var.availability_2a_zone
+  vpc_id                  = var.vpc_id
+  cidr_block              = var.cird_private_subnet_2a
+  availability_zone       = var.availability_2a_zone
   map_public_ip_on_launch = false
 
   tags = {
