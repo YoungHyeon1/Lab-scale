@@ -63,7 +63,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
-
+    print(secrets_client["POSTGRES_SERVER"])
     POSTGRES_SERVER=secrets_client["POSTGRES_SERVER"]
     POSTGRES_USER=secrets_client["POSTGRES_USER"]
     POSTGRES_PASSWORD=secrets_client["POSTGRES_PASSWORD"]
