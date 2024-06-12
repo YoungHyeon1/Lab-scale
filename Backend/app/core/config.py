@@ -24,27 +24,15 @@ def parse_cors(v: Any) -> list[str] | str:
     raise ValueError(v)
 
 
-class SecretClient():
-    def __init__(self) -> None:
-        self.secret_client = boto3.client(
-            'secretsmanager',
-        )
-
-    def get_secret(self) -> dict:
-        try:
-            get_secret_value_response = self.secret_client.get_secret_value(
-                SecretId='riot-crawler-api'
-            )
-        except ClientError as e:
-            raise e
-        return json.loads(get_secret_value_response['SecretString'])
-
-secrets_client = SecretClient()
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env", env_ignore_empty=True, extra="ignore"
     )
+    secret_client = boto3.client('secretsmanager')
+    get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawler-api')
+    secrets = json.loads(get_secret_value_response['SecretString'])
+
+
     API_V1_STR: str = "/v1"
     SECRET_KEY: str = secrets.token_urlsafe(32)
     # 60 minutes * 24 hours * 8 days = 8 days
@@ -63,13 +51,13 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
-    print(secrets_client["POSTGRES_SERVER"])
-    POSTGRES_SERVER=secrets_client["POSTGRES_SERVER"]
-    POSTGRES_USER=secrets_client["POSTGRES_USER"]
-    POSTGRES_PASSWORD=secrets_client["POSTGRES_PASSWORD"]
+    print(secrets["POSTGRES_SERVER"])
+    POSTGRES_SERVER=secrets["POSTGRES_SERVER"]
+    POSTGRES_USER=secrets["POSTGRES_USER"]
+    POSTGRES_PASSWORD=secrets["POSTGRES_PASSWORD"]
     POSTGRES_DB='postgres'
     POSTGRES_PORT=5432
-    API_KEY=secrets_client["API_KEY"]
+    API_KEY=secrets["API_KEY"]
 
     @computed_field  # type: ignore[misc]
     @property
