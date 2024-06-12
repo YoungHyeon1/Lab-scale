@@ -10,7 +10,6 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
 # Copy poetry.lock* in case it doesn't exist in the repo
 COPY ./Backend/pyproject.toml /Backend/app/
 COPY ./Backend/poetry.lock* /Backend/app/
-COPY ./Backend/README.md /Backend/app/
 COPY ./lib-commons /Backend/lib-commons/
 
 # Allow installing dev dependencies to run tests
