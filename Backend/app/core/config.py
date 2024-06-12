@@ -1,7 +1,7 @@
 import secrets
 from pydantic_core import MultiHostUrl
 from typing import Annotated, Any, Literal
-from utils.aws_secrets_key import SecretClient
+from .aws_secrets_key import SecretClient
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict
