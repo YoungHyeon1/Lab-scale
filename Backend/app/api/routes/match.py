@@ -1,10 +1,18 @@
 import httpx
-import json
 from typing import Any
-from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
-from app.core.config import settings
-from lib_commons.models.user_matches import Users, Matches, user_matches
+from app.schema.sqs import Message
+from app.api.deps import send_sqs_message
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Request
+)
+from lib_commons.models.user_matches import (
+    Users,
+    Matches,
+    user_matches
+)
 
 router = APIRouter()
 asia_client = httpx.Client(base_url='https://asia.api.riotgames.com/')
@@ -30,6 +38,8 @@ def get_match_item(
         .limit(limits)
         .all()
     )
+    if matches == []:
+        raise HTTPException(status_code=404, detail="Match not found")
 
     return [
         {
@@ -43,3 +53,43 @@ def get_match_item(
         }
         for match in matches
     ]
+
+# Riot server to Queue
+@router.get('/spectator')
+def get_riot_queue(
+    request: Request,
+    db: SessionDep,
+    user_id: str 
+) -> Any:
+    """
+    Get Riot Queue
+    """
+    message=Message(
+        service=request.url.path.split('/')[3],
+        request_id=request.state.puuid[0],
+        user_id=user_id
+    )
+    task_id = send_sqs_message(message, db)
+    return {
+        "service": request.url.path.split('/')[3],
+        "request_id": request.state.puuid,
+        "task_id": task_id
+    }
+
+
+# queue response and status
+@router.get('/status')
+def get_riot_status(
+    request: Request,
+    db: SessionDep,
+    task_id: str
+) -> Any:
+    """
+    Get Riot Status
+    """
+
+    return {
+        "service": request.url.path.split('/')[3],
+        "request_id": request.state.puuid,
+        "task_id": task_id
+    }

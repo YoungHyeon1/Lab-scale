@@ -44,6 +44,8 @@ class Users(Model):
     profile_icon_id = sa.Column(sa.Integer(), nullable=True)
     revision_date = sa.Column(sa.DateTime, nullable=True)
     summoner_level = sa.Column(sa.Integer(), nullable=True)
+    game_name = sa.Column(sa.String(), nullable=True)
+    tag_line = sa.Column(sa.String(), nullable=True)
     matches = sa.orm.relationship("Matches", secondary=user_matches, back_populates='users')
     league = sa.orm.relationship("League", secondary=user_leagues, back_populates='summoner')
 

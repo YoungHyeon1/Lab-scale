@@ -6,7 +6,7 @@ resource "aws_eip" "nat" {
 }
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = var.db_subnet_id[1]
+  subnet_id     = var.db_subnet_id[0]
   tags = {
     Name = "NAT Gateway"
   }
@@ -16,18 +16,18 @@ resource "aws_route_table" "private_route_table" {
   vpc_id     = var.vpc_id
   depends_on = [aws_nat_gateway.nat_gateway]
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat_gateway.id
-  }
+  # route {
+  #   cidr_block = "0.0.0.0/0"
+  #   gateway_id = aws_nat_gateway.nat_gateway.id
+  # }
 }
 
 resource "aws_route_table_association" "private_subnet_association" {
-  subnet_id      = var.db_subnet_id[1]
+  subnet_id      = var.db_subnet_id[0]
   route_table_id = aws_route_table.private_route_table.id
 }
 
 resource "aws_route_table_association" "private_subnet_association_2b" {
-  subnet_id      = var.db_subnet_id[0]
+  subnet_id      = var.db_subnet_id[1]
   route_table_id = aws_route_table.private_route_table.id
 }
