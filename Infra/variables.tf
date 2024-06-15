@@ -8,7 +8,7 @@ variable "region" {
   type        = string
 }
 
-variable "subnet_ids" {
+variable "public_subnet_ids" {
   description = "The IDs of the subnets"
   type        = list(string)
 }

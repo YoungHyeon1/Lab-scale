@@ -12,7 +12,13 @@ resource "aws_lambda_function" "scraper_handler" {
   handler       = "scraper.scraper_handler"
   runtime       = "python3.11"
 
+  vpc_config {
+    subnet_ids         = var.public_subnet_ids
+    security_group_ids = [aws_security_group.sg_fastapi.id]
+  }
+
   source_code_hash = filebase64sha256(data.archive_file.script_lambda_zip.output_path)
+  layers = [aws_lambda_layer_version.riot_layer.arn]
 }
 
 data "aws_iam_policy_document" "scraper_role_document" {
@@ -33,19 +39,24 @@ data "aws_iam_policy_document" "scraper_policy_document" {
     effect = "Allow"
 
     actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-      "dynamodb:PutItem",
-      "dynamodb:GetItem",
-      "dynamodb:UpdateItem",
-      "dynamodb:Query",
-      "dynamodb:Scan",
-      "dynamodb:DeleteItem",
       "sqs:DeleteMessage",
-      "sqs:GetQueueAttributes",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
       "sqs:ReceiveMessage",
+      "dynamodb:Scan",
+      "dynamodb:Query",
+      "dynamodb:UpdateItem",
+      "sqs:GetQueueAttributes",
+      "logs:CreateLogGroup",
+      "logs:PutLogEvents",
       "s3:PutObject",
+      "logs:CreateLogStream",
+      "dynamodb:GetItem",
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeNetworkInterfacePermissions",
+      "ec2:DeleteNetworkInterfacePermission",
+      "ec2:DeleteNetworkInterface"
     ]
 
     resources = [
@@ -81,11 +92,11 @@ resource "aws_cloudwatch_log_group" "scraper_riot_group" {
 # Lambda function Layer
 resource "aws_lambda_layer_version" "riot_layer" {
   layer_name = "riot_layer"
-  compatible_runtimes = ["python3.8"]
+  compatible_runtimes = ["python3.11"]
 
-  filename = "path/to/my-layer.zip"
+  filename = "labda_layer/python.zip"
 
-  source_code_hash = filebase64sha256("path/to/my-layer.zip")
+  source_code_hash = filebase64sha256("labda_layer/python.zip")
 }
 
 

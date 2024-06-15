@@ -65,12 +65,15 @@ def get_riot_queue(
     Get Riot 관전자 입니다.
     Riot server로 Requests 하기에 Queue 입력후 Lambdad에서 처리합니다.
     """
-    message=Message(
-        service=request.url.path.split('/')[3],
-        request_id=request.state.puuid[0],
-        user_id=user_id
-    )
-    task_id = send_sqs_message(message, db)
+    response = db.query(Users).filter(Users.puuid == user_id).one_or_none()
+    summoner_id = response.summoner_id
+
+    send_data =  {
+        "service":request.url.path.split('/')[3],
+        "request_id":request.state.puuid[0],
+        "user_id":summoner_id
+    }
+    task_id = send_sqs_message(send_data, db)
     return {
         "service": request.url.path.split('/')[3],
         "request_id": request.state.puuid[0],

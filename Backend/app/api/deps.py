@@ -19,7 +19,7 @@ SessionDep = Annotated[Session, Depends(get_db)]
 
 
 def send_sqs_message(
-    message: Message,
+    message: dict,
     db: SessionDep
 ) -> str:
 
@@ -31,9 +31,9 @@ def send_sqs_message(
     )
     db.add(task)
     db.commit()
-
+    message.update("task_id", task_id)
     try:
-        sqs_client.send_message(message_body=message.json())
+        sqs_client.send_message(message_body=json.dumps(message))
     except Exception as e:
         print(e)
         task.status = "Failed"
