@@ -43,6 +43,15 @@ def send_sqs_message(
     return task_id
 
 
+def get_task_status(
+    task_id: str,
+    db: SessionDep
+) -> Task:
+    task = db.query(Task).filter(Task.task_id == task_id).one_or_none()
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
+
 # def get_matchs_infomation(session: SessionDep):
 #     """
 #     Search Classic Game Infomation

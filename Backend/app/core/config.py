@@ -65,21 +65,21 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
-    # SMTP_TLS: bool = True
-    # SMTP_SSL: bool = False
-    # SMTP_PORT: int = 587
-    # SMTP_HOST: str | None = None
-    # SMTP_USER: str | None = None
-    # SMTP_PASSWORD: str | None = None
-# secret_client = boto3.client('secretsmanager')
-# get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawler-api')
-# secrets_aws = json.loads(get_secret_value_response['SecretString'])
+    SMTP_TLS: bool = True
+    SMTP_SSL: bool = False
+    SMTP_PORT: int = 587
+    SMTP_HOST: str | None = None
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
 
+secret_client = boto3.client('secretsmanager')
+get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawler-api')
+secrets_aws = json.loads(get_secret_value_response['SecretString'])
 
 settings = Settings(
     # POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"],
     # POSTGRES_USER=secrets_aws["POSTGRES_USER"],
     # POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"],
-    # API_KEY=secrets_aws["API_KEY"]
-)  # type: ignore
+    API_KEY=secrets_aws["API_KEY"]
+)
 

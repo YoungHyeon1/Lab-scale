@@ -79,14 +79,14 @@ resource "aws_cloudwatch_log_group" "scraper_riot_group" {
 }
 
 # Lambda function Layer
-# resource "aws_lambda_layer_version" "example_layer" {
-#   layer_name = "example_layer"
-#   compatible_runtimes = ["python3.8"]
+resource "aws_lambda_layer_version" "riot_layer" {
+  layer_name = "riot_layer"
+  compatible_runtimes = ["python3.8"]
 
-#   filename = "path/to/my-layer.zip"
+  filename = "path/to/my-layer.zip"
 
-#   source_code_hash = filebase64sha256("path/to/my-layer.zip")
-# }
+  source_code_hash = filebase64sha256("path/to/my-layer.zip")
+}
 
 
 # SQS 트리거

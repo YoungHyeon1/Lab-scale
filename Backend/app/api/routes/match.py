@@ -2,7 +2,7 @@ import httpx
 from typing import Any
 from app.api.deps import SessionDep
 from app.schema.sqs import Message
-from app.api.deps import send_sqs_message
+from app.api.deps import send_sqs_message, get_task_status
 from fastapi import (
     APIRouter,
     HTTPException,
@@ -62,7 +62,8 @@ def get_riot_queue(
     user_id: str 
 ) -> Any:
     """
-    Get Riot Queue
+    Get Riot 관전자 입니다.
+    Riot server로 Requests 하기에 Queue 입력후 Lambdad에서 처리합니다.
     """
     message=Message(
         service=request.url.path.split('/')[3],
@@ -72,24 +73,23 @@ def get_riot_queue(
     task_id = send_sqs_message(message, db)
     return {
         "service": request.url.path.split('/')[3],
-        "request_id": request.state.puuid,
+        "request_id": request.state.puuid[0],
         "task_id": task_id
     }
 
 
-# queue response and status
 @router.get('/status')
 def get_riot_status(
-    request: Request,
     db: SessionDep,
     task_id: str
 ) -> Any:
     """
-    Get Riot Status
+    Queue로 보낸 결과를 반환합니다.
+    Task id가 필요합니다.
     """
-
+    response_task = get_task_status(task_id, db)
     return {
-        "service": request.url.path.split('/')[3],
-        "request_id": request.state.puuid,
-        "task_id": task_id
+        "status": response_task.status,
+        "is_complete": response_task.is_complete,
+        "request_id": response_task.request_id,
     }
