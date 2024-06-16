@@ -10,7 +10,8 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 
 
 task_url = (
-    "/v1/match/spectator"
+    "/v1/match/spectator",
+    "/v1/match/update"
 )
 
 class LogRequestsMiddleware(BaseHTTPMiddleware):

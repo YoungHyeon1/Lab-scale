@@ -2,12 +2,15 @@ import json
 import time
 import boto3
 import httpx
-from sqlalchemy.orm import Session as orm_session
+from sqlalchemy import desc
 from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from lib_commons.models.riot_logic import APIKeyUsage
 from lib_commons.models.server_info import Task
+from sqlalchemy.orm import Session as orm_session
+from lib_commons.models.riot_logic import APIKeyUsage
+from lib_commons.models.user_matches import Users, Matches
+
 # 엔진 및 세션 생성
 
 secret_client = boto3.client('secretsmanager')
@@ -25,8 +28,10 @@ DATABASE_URI = (
 )
 
 kr_client = httpx.Client(base_url='https://kr.api.riotgames.com/')
+asia_client = httpx.Client(base_url='https://asia.api.riotgames.com/')
 engine = create_engine(DATABASE_URI)
 Session = sessionmaker(bind=engine)
+
 
 def check_and_update_rate_limit(api_key):
     session = Session()
@@ -56,20 +61,19 @@ def check_and_update_rate_limit(api_key):
     return True
 
 
-def handle_request(url: str, client: httpx.Client, retry_count=0):
+def handle_request(url: str, params: dict, client: httpx.Client, retry_count=0):
     if check_and_update_rate_limit(API_KEY):
         time.sleep(0.5)
+        params.update({'api_key': API_KEY})
         response = client.get(
             url,
-            params={
-                'api_key': API_KEY
-            }
+            params
         )
         if response.status_code != 200:
             print(f"API request failed with status code {response.status_code}")
             raise Exception(response.text)
         print("API request sent successfully")
-        return response
+        return response.json()
     else:
         if retry_count < 5:  # 최대 5회 재시도
             delay = min(30, 2 ** retry_count)  # 지수 백오프 계산, 최대 30초 대기
@@ -85,6 +89,7 @@ def spectator_v5(session: orm_session, summoner_id: str):
     try:
         handle_request(
             f"/lol/spectator/v5/active-games/by-summoner/{summoner_id}",
+            {},
             kr_client
         )
         task.status = "Completed"
@@ -95,6 +100,37 @@ def spectator_v5(session: orm_session, summoner_id: str):
         task.is_complete = True
     finally:
         session.commit()
+
+
+def get_match_v5_ids(session: orm_session, puuid: str) -> set:
+    matches = (
+        session.query(Matches).join(Users.matches).
+        filter(Users.puuid == puuid).
+        order_by(desc(Matches.create_timestamp)).
+        limit(100).all()
+    )
+    my_db_match_ids = set([match.match_id for match in matches])
+
+    riot_match_ids = handle_request(
+        "/lol/match/v5/matches/by-puuid/",
+        {
+            "start": 0,
+            "count": 100
+        },
+        asia_client
+    )
+    riot_match_ids = [ match_id[3:] for match_id in riot_match_ids]
+    matches_ids = my_db_match_ids.difference(riot_match_ids)
+    return list(matches_ids)
+
+
+def matches_update(session: orm_session, puuid: str):
+    for match_id in get_match_v5_ids(session, puuid):
+        handle_request(
+            f"GET /lol/match/v5/matches/{match_id}",
+            {},
+            asia_client
+        )
 
 
 def scraper_handler(event, context):

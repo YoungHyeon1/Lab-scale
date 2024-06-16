@@ -1,4 +1,5 @@
 import httpx
+from typing import Any
 from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from app.core.config import settings
@@ -11,27 +12,29 @@ asia_client = httpx.Client(base_url='https://asia.api.riotgames.com/')
 
 @router.get("/puuid")
 def get_user_key(
-    gameName: str, tagLine: str = "KR1"
-) -> UserKeyResponse:
+    gameName: str,db: SessionDep, tagLine: str = "KR1"
+) -> Any:
     """
     GameName과 TagLine을 입력받아 해당 유저의 puuid를 반환합니다.
     """
-    account_response = asia_client.get(
-        (
-            "/riot/account/v1/accounts/by-riot-id/"
-            f"{gameName}/{tagLine}"
-        ),
-        params={"api_key": settings.API_KEY}
-    )
-    if account_response.status_code != 200:
-        raise HTTPException(status_code=404)
+    matces_ids = db.query(Users).filter(Users.puuid=='').all()
+    print([matces_id.matches for matces_id in  matces_ids])
+    # account_response = asia_client.get(
+    #     (
+    #         "/riot/account/v1/accounts/by-riot-id/"
+    #         f"{gameName}/{tagLine}"
+    #     ),
+    #     params={"api_key": settings.API_KEY}
+    # )
+    # if account_response.status_code != 200:
+    #     raise HTTPException(status_code=404)
 
-    info = account_response.json()
-    return UserKeyResponse(
-        puuid=info["puuid"],
-        game_name=info["gameName"],
-        tag_line=info["tagLine"],
-    )
+    # info = account_response.json()
+    # return UserKeyResponse(
+    #     puuid=info["puuid"],
+    #     game_name=info["gameName"],
+    #     tag_line=info["tagLine"],
+    # )
 
 @router.get("/league")
 def get_user_league_info(session: SessionDep, puuid: str) -> LeagesInfoResponse:

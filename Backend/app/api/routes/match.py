@@ -13,7 +13,6 @@ from lib_commons.models.user_matches import (
     Matches,
     user_matches
 )
-
 router = APIRouter()
 asia_client = httpx.Client(base_url='https://asia.api.riotgames.com/')
 
@@ -63,6 +62,32 @@ def get_riot_queue(
 ) -> Any:
     """
     Get Riot 관전자 입니다.
+    Riot server로 Requests 하기에 Queue 입력후 Lambdad에서 처리합니다.
+    """
+    response = db.query(Users).filter(Users.puuid == user_id).one_or_none()
+    summoner_id = response.summoner_id
+
+    send_data =  {
+        "service":request.url.path.split('/')[3],
+        "request_id":request.state.puuid[0],
+        "user_id":summoner_id
+    }
+    task_id = send_sqs_message(send_data, db)
+    return {
+        "service": request.url.path.split('/')[3],
+        "request_id": request.state.puuid[0],
+        "task_id": task_id
+    }
+
+@router.get('/update')
+def get_riot_update(
+    request: Request,
+    db: SessionDep,
+    user_id: str
+) -> Any:
+    """
+    Get Riot Update 입니다.
+    puuid를 입력받아 Riot Server의 Matches 정보를 업데이트합니다.
     Riot server로 Requests 하기에 Queue 입력후 Lambdad에서 처리합니다.
     """
     response = db.query(Users).filter(Users.puuid == user_id).one_or_none()
