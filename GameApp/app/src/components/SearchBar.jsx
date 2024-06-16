@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { fetchGameStats } from "../redux/gameStatsSlice";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -36,10 +34,9 @@ const SearchContainer = styled.div`
   padding: 5px 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 50px;
-
   width: 70%; /* 너비를 80%로 설정 */
   max-width: 600px; /* 최대 너비 설정 */
-  margin: 0 auto; /* 중앙 정렬 */
+  margin: 1.5% auto; /* 중앙 정렬 */
 `;
 
 const SearchIcon = styled.span`

@@ -6,6 +6,7 @@ import GlobalStyle from "./components/GlobalStyle"; // 스타일링을 위한 �
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Research from "./components/Research";
 import CardList from "./components/testcomponent";
+import AIPredicPage from "./components/AIPredicPage";
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/research/:gameName" element={<Research />} />
-          <Route path="/cards" element={<CardList />} />{" "}
+          <Route path="/cards" element={<CardList />} />
+          <Route path="/ai_search" element={<AIPredicPage />} />
           {/* CardList 라우트 추가 */}
         </Routes>
       </Provider>

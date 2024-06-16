@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const SidebarContainer = styled.div`
@@ -30,7 +31,7 @@ const SidebarButton = styled.button`
   transition: 0.5s;
 `;
 
-const MenuItem = styled.a`
+const MenuItem = styled(Link)`
   padding: 10px 15px;
   text-decoration: none;
   font-size: 25px;
@@ -56,8 +57,8 @@ const SidebarComponent = () => {
         {isOpen ? "Close" : "Menu"}
       </SidebarButton>
       <SidebarContainer isOpen={isOpen}>
-        <MenuItem href="#">홈</MenuItem>
-        <MenuItem href="#">AI 분석</MenuItem>
+        <MenuItem to="/">홈</MenuItem>
+        <MenuItem to="/ai_search">AI 분석</MenuItem>
       </SidebarContainer>
     </>
   );

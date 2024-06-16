@@ -14,6 +14,11 @@ const Research = () => {
       "https://ddragon.leagueoflegends.com/cdn/10.6.1/img/profileicon/4529.png",
     name: gameName,
     rank: "Diamond IV",
+    rankIconUrl:
+      "https://ddragon.leagueoflegends.com/cdn/10.6.1/img/profileicon/12.png",
+    lastUpdated: "2023-06-01",
+    wins: 10,
+    losses: 1,
   };
 
   const gameRecords = [
@@ -26,7 +31,7 @@ const Research = () => {
       deaths: 1,
       assists: 5,
       date: "2023-06-01",
-      detail: []
+      detail: [],
     },
     {
       id: 2,

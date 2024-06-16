@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import GameModal from "./GameModal";
-/*
+
 const spin = keyframes`
     0% {
       --rotate: 0deg;
@@ -92,7 +92,7 @@ const GameList = ({ games }) => {
       </GameListContainer>
     </>
   );
-};*/
+};
 
 
 const MatchDetailModal = styled(GameModal)`
