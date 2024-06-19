@@ -31,7 +31,7 @@ def send_sqs_message(
     )
     db.add(task)
     db.commit()
-    message.update("task_id", task_id)
+    message["task_id"] = task_id
     try:
         sqs_client.send_message(message_body=json.dumps(message))
     except Exception as e:
