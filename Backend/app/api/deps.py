@@ -26,7 +26,7 @@ def send_sqs_message(
     task_id = str(uuid.uuid4())
     task = Task(
         task_id=task_id,
-        request_id=message.request_id,
+        request_id=message["request_id"],
         status="waiting"
     )
     db.add(task)
