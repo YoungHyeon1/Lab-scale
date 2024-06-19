@@ -4,13 +4,13 @@ from fastapi import Depends
 from typing import Annotated
 from app.core.db import engine
 from fastapi import HTTPException
-from app.schema.sqs import Message
 from sqlalchemy.orm import Session
+from app.core.config import settings
 from collections.abc import Generator
 from lib_commons.models.server_info import Task
 from lib_commons.aws_client.sqs_client import SQSClient
 
-sqs_client = SQSClient(queue_url="", region_name="ap-northeast-2")
+sqs_client = SQSClient(queue_url=settings.SQS_URL, region_name="ap-northeast-2")
 def get_db() -> Generator[Session, None, None]:
     with Session(bind=engine) as session:
         yield session
