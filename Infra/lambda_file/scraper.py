@@ -84,20 +84,20 @@ def handle_request(url: str, params: dict, client: httpx.Client, retry_count=0):
             raise Exception("Rate limit exceeded, maximum retries reached")
 
 
-def spectator_v5(session: orm_session, summoner_id: str):
-    task = session.query(Task).filter(Task.task_id == task).one_or_none()
+def spectator_v5(session: orm_session, summoner_id: str, task: str):
+    load_task = session.query(Task).filter(Task.task_id == task).one_or_none()
     try:
         handle_request(
             f"/lol/spectator/v5/active-games/by-summoner/{summoner_id}",
             {},
             kr_client
         )
-        task.status = "Completed"
-        task.is_complete = True
+        load_task.status = "Completed"
+        load_task.is_complete = True
     except Exception:
         print(f"Failed to process message Spectator_v5: {summoner_id}")
-        task.status = "Failed"
-        task.is_complete = True
+        load_task.status = "Failed"
+        load_task.is_complete = True
     finally:
         session.commit()
 
@@ -124,13 +124,59 @@ def get_match_v5_ids(session: orm_session, puuid: str) -> set:
     return list(matches_ids)
 
 
-def matches_update(session: orm_session, puuid: str):
+def upload_matches(match_data: dict, session: orm_session):
+    user_list = list()
+    for user_info in match_data['info']['participants']:
+        if user_info['puuid'] == 'BOT':
+            raise ValueError
+
+        user = session.query(Users).filter_by(puuid=user_info['puuid']).one_or_none()
+        if user is None:
+            user = (Users(
+                puuid=user_info["puuid"],
+                summoner_id=user_info["summonerId"]
+            ))
+        user_list.append(user)
+    
+    new_matches = Matches(
+        match_id=match_data["info"]["gameId"],
+        create_timestamp=datetime.fromtimestamp(match_data["info"]["gameCreation"] / 1000, utc_zone),
+        start_timestamp=datetime.fromtimestamp(match_data["info"]["gameStartTimestamp"] / 1000, utc_zone),
+        end_timestamp=datetime.fromtimestamp(match_data["info"]["gameEndTimestamp"] / 1000, utc_zone),
+        game_name=match_data["info"]["gameName"],
+        game_mode=match_data["info"]["gameMode"],
+        game_type=match_data["info"]["gameType"],
+        map_id=match_data["info"]["mapId"],
+        duration=match_data["info"]["gameDuration"],
+        game_version=match_data["info"]["gameVersion"],
+        participants=match_data["info"]["participants"],
+    )
+    new_matches.users.extend(user_list)
+    session.add(new_matches)
+    session.commit()
+    print(match_data["info"]["gameId"])
+
+
+
+def matches_update(session: orm_session, puuid: str, task: str):
+    load_task = session.query(Task).filter(Task.task_id == task).one_or_none()
     for match_id in get_match_v5_ids(session, puuid):
-        handle_request(
+        response = handle_request(
             f"GET /lol/match/v5/matches/{match_id}",
             {},
             asia_client
         )
+        try:
+            upload_matches(response)
+        except Exception:
+            print(f"Failed to process message Matches_update: {puuid}\n {match_id}")
+            load_task.status="Failed"
+            load_task.is_complete = True
+            session.commit()
+            raise
+    load_task.status = "Completed"
+    load_task.is_complete = True
+    session.commit()
 
 
 def scraper_handler(event, context):
@@ -140,7 +186,17 @@ def scraper_handler(event, context):
         message_body = record['body']
         message_data = json.loads(message_body)
         if message_data['service'] == '/v1/match/spectator':
-            spectator_v5(session, message_data['user_id'])
+            spectator_v5(
+                session,
+                message_data['user_id'],
+                message_data['task_id']
+            )
+        elif message_data['service'] == '/v1/match/update':
+            matches_update(
+                session,
+                message_data['user_id'],
+                message_data['task_id']
+            )
     session.close()
 
         # # 메시지 데이터에서 필요한 정보 추출
