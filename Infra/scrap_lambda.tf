@@ -11,6 +11,8 @@ resource "aws_lambda_function" "scraper_handler" {
   role          = aws_iam_role.scraper_role.arn
   handler       = "scraper.scraper_handler"
   runtime       = "python3.11"
+  timeout       = 90
+  memory_size   = 2048
 
   vpc_config {
     subnet_ids         = var.public_subnet_ids

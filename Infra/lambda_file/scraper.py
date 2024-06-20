@@ -162,7 +162,7 @@ def matches_update(session: orm_session, puuid: str, task: str):
     load_task = session.query(Task).filter(Task.task_id == task).one_or_none()
     for match_id in get_match_v5_ids(session, puuid):
         response = handle_request(
-            f"GET /lol/match/v5/matches/{match_id}",
+            f"/lol/match/v5/matches/{match_id}",
             {},
             asia_client
         )
@@ -185,13 +185,13 @@ def scraper_handler(event, context):
         # 메시지 본문을 JSON 객체로 변환
         message_body = record['body']
         message_data = json.loads(message_body)
-        if message_data['service'] == '/v1/match/spectator':
+        if message_data['service'] == 'spectator':
             spectator_v5(
                 session,
                 message_data['user_id'],
                 message_data['task_id']
             )
-        elif message_data['service'] == '/v1/match/update':
+        elif message_data['service'] == 'update':
             matches_update(
                 session,
                 message_data['user_id'],

@@ -90,13 +90,12 @@ def get_riot_update(
     puuid를 입력받아 Riot Server의 Matches 정보를 업데이트합니다.
     Riot server로 Requests 하기에 Queue 입력후 Lambdad에서 처리합니다.
     """
-    response = db.query(Users).filter(Users.puuid == user_id).one_or_none()
-    summoner_id = response.summoner_id
+    # summoner_id = response.summoner_id
 
     send_data =  {
         "service":request.url.path.split('/')[3],
         "request_id":request.state.puuid[0],
-        "user_id":summoner_id
+        "user_id":user_id
     }
     task_id = send_sqs_message(send_data, db)
     return {
