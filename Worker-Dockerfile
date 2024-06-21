@@ -15,8 +15,7 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
 COPY ./Backend/pyproject.toml /Backend/app/
 COPY ./Backend/poetry.lock* /Backend/app/
 COPY ./lib-commons /Backend/lib-commons/
-COPY ./Backend/app/celery_app.py /Backend/app/app/celery_app.py
-COPY ./Backend/app/tasks /Backend/app/app/tasks
+COPY ./Backend/app /Backend/app/app
 
 WORKDIR /Backend/app/
 RUN poetry install --no-root --no-ansi -vv ${POETRY_ARGS}
