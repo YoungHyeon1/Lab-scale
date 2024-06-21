@@ -1,7 +1,5 @@
 FROM python:3.11-slim
 
-WORKDIR /Backend/app/
-
 
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
@@ -14,6 +12,8 @@ COPY ./Backend/poetry.lock* /Backend/app/
 COPY ./lib-commons /Backend/lib-commons/
 COPY ./Backend/app/celery_app.py /Backend/app/
 COPY ./Backend/app/tasks /Backend/app/tasks
+
+WORKDIR /Backend/app/
 
 RUN poetry install --no-root --no-ansi -vv ${POETRY_ARGS}
 
