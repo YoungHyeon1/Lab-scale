@@ -3,7 +3,6 @@ import json
 import secrets
 from pydantic_core import MultiHostUrl
 from typing import Annotated, Any, Literal
-from botocore.exceptions import ClientError
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict
@@ -52,7 +51,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str ="postgres"
     POSTGRES_PORT:int =5432
     API_KEY: str
-    SQS_URL: str
+    BROKER_URL: str
 
     @computed_field  # type: ignore[misc]
     @property
@@ -78,10 +77,11 @@ get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawle
 secrets_aws = json.loads(get_secret_value_response['SecretString'])
 
 settings = Settings(
-    POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"],
-    POSTGRES_USER=secrets_aws["POSTGRES_USER"],
-    POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"],
-    SQS_URL=secrets_aws["SQS_URL"],
-    API_KEY=secrets_aws["API_KEY"]
+    # POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"],
+    # POSTGRES_USER=secrets_aws["POSTGRES_USER"],
+    # POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"],
+    # SQS_URL=secrets_aws["SQS_URL"],
+    # API_KEY=secrets_aws["API_KEY"]
+    # BROKER_URL=""
 )
 

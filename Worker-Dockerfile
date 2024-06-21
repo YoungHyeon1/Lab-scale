@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /Backend/app/
+
+
+COPY ./Backend/pyproject.toml /Backend/app/
+COPY ./Backend/poetry.lock* /Backend/app/
+COPY ./lib-commons /Backend/lib-commons/
+COPY ./Backend/app/ celery_app.py /Backend/app/
+COPY ./Backend/app/tasks /Backend/app/tasks
+
+RUN poetry install --no-root --no-ansi -vv ${POETRY_ARGS}
+
+CMD ["celery", "-A", "celery_app", "worker", "-l", "info"]

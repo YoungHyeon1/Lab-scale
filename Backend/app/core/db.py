@@ -12,6 +12,7 @@ from app.core.config import settings
 # for more details: https://github.com/tiangolo/full-stack-fastapi-template/issues/28
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def init_db(session: sessionmaker) -> None:
     pass

@@ -5,21 +5,21 @@ from typing import Annotated
 from app.core.db import engine
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.core.config import settings
 from collections.abc import Generator
 from lib_commons.models.server_info import Task
 from lib_commons.aws_client.sqs_client import SQSClient
+from app.celery_app import celery_app
 
-sqs_client = SQSClient(queue_url=settings.SQS_URL, region_name="ap-northeast-2")
 def get_db() -> Generator[Session, None, None]:
     with Session(bind=engine) as session:
         yield session
 
 SessionDep = Annotated[Session, Depends(get_db)]
 
-
-def send_sqs_message(
+def send_mq_message(
+    task_name: str,
     message: dict,
+    queue_name: str,
     db: SessionDep
 ) -> str:
 
@@ -33,7 +33,11 @@ def send_sqs_message(
     db.commit()
     message["task_id"] = task_id
     try:
-        sqs_client.send_message(message_body=json.dumps(message))
+        celery_app.send_task(
+            task_name,
+            args=[message],
+            queue=queue_name
+        )
     except Exception as e:
         print(e)
         task.status = "Failed"

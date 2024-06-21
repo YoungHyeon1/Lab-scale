@@ -1,8 +1,7 @@
 import httpx
 from typing import Any
 from app.api.deps import SessionDep
-from app.schema.sqs import Message
-from app.api.deps import send_sqs_message, get_task_status
+from app.api.deps import get_task_status
 from fastapi import (
     APIRouter,
     HTTPException,
@@ -13,6 +12,8 @@ from lib_commons.models.user_matches import (
     Matches,
     user_matches
 )
+from app.api.deps import send_mq_message
+from app.tasks.update_task import process_match_data
 router = APIRouter()
 asia_client = httpx.Client(base_url='https://asia.api.riotgames.com/')
 
@@ -64,15 +65,15 @@ def get_riot_queue(
     Get Riot 관전자 입니다.
     Riot server로 Requests 하기에 Queue 입력후 Lambdad에서 처리합니다.
     """
-    response = db.query(Users).filter(Users.puuid == user_id).one_or_none()
-    summoner_id = response.summoner_id
+    # response = db.query(Users).filter(Users.puuid == user_id).one_or_none()
+    # summoner_id = response.summoner_id
 
     send_data =  {
-        "service":request.url.path.split('/')[3],
-        "request_id":request.state.puuid[0],
-        "user_id":summoner_id
+        "service": request.url.path.split('/')[3],
+        "request_id": request.state.puuid[0],
+        "user_id": user_id
     }
-    task_id = send_sqs_message(send_data, db)
+    task_id = send_mq_message('spect',send_data, db)
     return {
         "service": request.url.path.split('/')[3],
         "request_id": request.state.puuid[0],
@@ -97,7 +98,13 @@ def get_riot_update(
         "request_id":request.state.puuid[0],
         "user_id":user_id
     }
-    task_id = send_sqs_message(send_data, db)
+    task_id = send_mq_message(
+        'app.tasks.update_task.process_match_data',
+        send_data,
+        "update",
+        db
+    )
+    
     return {
         "service": request.url.path.split('/')[3],
         "request_id": request.state.puuid[0],
