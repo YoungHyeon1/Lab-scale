@@ -18,8 +18,8 @@ COPY ./lib-commons /Backend/lib-commons/
 COPY ./Backend/app/celery_app.py /Backend/app/
 COPY ./Backend/app/tasks /Backend/app/tasks
 
-WORKDIR /Backend/app/
+WORKDIR /Backend/
 
 RUN poetry install --no-root --no-ansi -vv ${POETRY_ARGS}
 
-CMD ["celery", "-A", "celery_app", "worker", "-l", "info"]
+CMD ["celery", "-A", "app.celery_app", "worker", "-l", "info"]
