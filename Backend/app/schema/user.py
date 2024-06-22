@@ -10,6 +10,7 @@ class LeagesInfoResponse(BaseModel):
     summoner_id: str
     league_id: str
     league_points: int
+    queue_type: str
     rank: str
     wins: int
     losses: int

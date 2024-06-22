@@ -39,20 +39,14 @@ def check_and_update_rate_limit(api_key, now):
 def request_handle(url: str, client: httpx.Client, params: dict = {}, retry_count=0):
     logger.info(f"Retry count: {retry_count}")
     now = datetime.utcnow()
-    logger.info(now.strftime("%Y-%m-%d:%H:%M:%S"))
     if check_and_update_rate_limit(settings.API_KEY, now):
         time.sleep(1.0)
         params.update({'api_key': settings.API_KEY})
-        response = client.request(
-            "get",
-            url,
-            params=params
-        )
-        if response.status_code != 200:
-            logger.info(f"API request failed with status code {response.status_code}")
-            raise Exception(response.text)
-        logger.info("API request sent successfully")
-        return response.json()
+        try:
+            response = client.request("get", url, params=params)
+            return response.json()
+        except Exception as e:
+            logger.exception(f"An unexpected error occurred: {e}")
     else:
         if retry_count < 50:  # 최대 5회 재시도
             time.sleep(2.5)
