@@ -1,18 +1,19 @@
+import boto3
+import json
 import secrets
-import warnings
+from pydantic_core import MultiHostUrl
 from typing import Annotated, Any, Literal
-
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict
+)
 from pydantic import (
     AnyUrl,
     BeforeValidator,
-    HttpUrl,
     PostgresDsn,
-    computed_field,
-    model_validator,
+    computed_field
 )
-from pydantic_core import MultiHostUrl
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing_extensions import Self
+
 
 def parse_cors(v: Any) -> list[str] | str:
     if isinstance(v, str) and not v.startswith("["):
@@ -44,5 +45,42 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
+    POSTGRES_SERVER: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DB: str ="postgres"
+    POSTGRES_PORT:int =5432
+    API_KEY: str
+    BROKER_URL: str
 
-settings = Settings()  # type: ignore
+    @computed_field  # type: ignore[misc]
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+        return MultiHostUrl.build(
+            scheme="postgresql+psycopg",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            path=self.POSTGRES_DB,
+        )
+
+    SMTP_TLS: bool = True
+    SMTP_SSL: bool = False
+    SMTP_PORT: int = 587
+    SMTP_HOST: str | None = None
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+
+secret_client = boto3.client('secretsmanager')
+get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawler-api')
+secrets_aws = json.loads(get_secret_value_response['SecretString'])
+
+settings = Settings(
+    POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"],
+    POSTGRES_USER=secrets_aws["POSTGRES_USER"],
+    POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"],
+    BROKER_URL=secrets_aws["MQ_URL"],
+    API_KEY=secrets_aws["API_KEY"]
+)
+

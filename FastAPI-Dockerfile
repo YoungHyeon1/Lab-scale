@@ -1,0 +1,23 @@
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11
+
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python && \
+    cd /usr/local/bin && \
+    ln -s /opt/poetry/bin/poetry && \
+    poetry config virtualenvs.create false
+
+# Copy poetry.lock* in case it doesn't exist in the repo
+COPY ./Backend/pyproject.toml /Backend/app/
+COPY ./Backend/poetry.lock* /Backend/app/
+COPY ./lib-commons /Backend/lib-commons/
+
+# Allow installing dev dependencies to run tests
+WORKDIR /Backend/app/
+RUN poetry lock
+RUN poetry install --no-root --no-ansi -vv ${POETRY_ARGS}
+
+COPY ./Backend/app /Backend/app/app
+WORKDIR /Backend/app/
+CMD ["uvicorn", "app.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8000

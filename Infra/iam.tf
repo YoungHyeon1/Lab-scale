@@ -24,6 +24,8 @@ data "aws_iam_policy_document" "ecs_exec_policy_doc" {
       "secretsmanager:GetSecretValue",
       "secretsmanager:DescribeSecret",
       "sns:Publish",
+      "sqs:ReceiveMessage",
+      "sqs:sendmessage",
       "s3:*"
     ]
     resources = [

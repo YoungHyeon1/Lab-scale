@@ -10,19 +10,19 @@ resource "aws_security_group" "riot_rds_sg" {
   name        = "rds-sg"
   description = "Security group for RDS PostgreSQL instance"
   vpc_id      = var.vpc_id
-  ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   from_port   = 5432
+  #   to_port     = 5432
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # egress {
+  #   from_port   = 0
+  #   to_port     = 0
+  #   protocol    = "-1"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   tags = {
     Name = "rds-security-group"
@@ -33,7 +33,7 @@ resource "aws_db_instance" "riot_db" {
   identifier             = "riot-db"
   engine                 = "postgres"
   instance_class         = "db.t3.micro"
-  allocated_storage      = 50
+  allocated_storage      = 80
   storage_type           = "gp2"
   storage_encrypted      = false
   engine_version         = "16.2"

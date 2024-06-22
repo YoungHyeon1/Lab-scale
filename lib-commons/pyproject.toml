@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "lib-commons"
+version = "0.3.2"
+description = ""
+authors = ["YoungHyeon1 <73692488+YoungHyeon1@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = "^2.0.30"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
