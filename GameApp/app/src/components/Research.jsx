@@ -1,13 +1,30 @@
 import SidebarComponent from "./SidebarComponent";
 // import { SearchBar } from "./SearchBar";
-import React from "react";
+import React, { useEffect } from "react";
 import SearchBar from "./SearchBar";
 import ProfileCard from "./module/ProfileCard";
 import GameList from "./module/GameList";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPuuid } from "../redux/getPuuidSlice";
+import { fetchUserInfo } from "../redux/userInfoSlice";
 
-const Research = () => {
+function Research() {
   const { gameName } = useParams();
+  const dispatch = useDispatch();
+
+  const { result } = useSelector((state) => state.getPuuid);
+  const { userInfo } = useSelector((state) => state.userInfo);
+
+  useEffect(() => {
+    dispatch(fetchPuuid(gameName));
+  }, [dispatch, gameName]);
+
+  useEffect(() => {
+    if (result.puuid) {
+      dispatch(fetchUserInfo(result.puuid));
+    }
+  }, [dispatch, result]);
 
   const profileData = {
     imageUrl:
@@ -53,6 +70,6 @@ const Research = () => {
       <GameList games={gameRecords} />
     </>
   );
-};
+}
 
 export default Research;

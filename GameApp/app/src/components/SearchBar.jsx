@@ -142,11 +142,21 @@ const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (searchTerm) => {
-    navigate(`/research/${searchTerm}`);
+  const handleSearch = () => {
+    searchTerm.replace("#", "-");
+    const convert_url = searchTerm.replace(/#/g, "-");
+    navigate(`/research/${convert_url}`);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      const convert_url = searchTerm.replace(/#/g, "-");
+      navigate(`/research/${convert_url}`);
+    }
   };
 
   const handleChange = (event) => {
+    // summonerName.replace("#", "-");
     setSearchTerm(event.target.value);
   };
 
@@ -158,8 +168,9 @@ const SearchBar = () => {
         placeholder="플레이어 이름 + #KR1"
         value={searchTerm}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
-      <SearchButton onClick={() => handleSearch(searchTerm)}>검색</SearchButton>
+      <SearchButton onClick={handleSearch}>검색</SearchButton>
     </SearchContainer>
   );
 };
