@@ -21,19 +21,12 @@ app = FastAPI(
 async def health_check():
     return JSONResponse(content={"status": "ok"}, status_code=200)
 
-
-# Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        # LogRequestsMiddleware,
-        CORSMiddleware,
-        allow_origins=[
-            str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS
-        ],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        
-    )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(LogRequestsMiddleware)
 app.include_router(api_router, prefix=settings.API_V1_STR)
