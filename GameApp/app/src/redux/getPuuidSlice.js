@@ -2,38 +2,39 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // 비동기 요청을 위한 Thunk
-export const fetchGameStats = createAsyncThunk(
-  "gameStats/fetchGameStats",
+export const fetchPuuid = createAsyncThunk(
+  "getPuuid/fetchPuuid",
   async (summonerName) => {
+    const [ganeName, tagLine = ""] = summonerName.split("-");
     const response = await axios.get(
-      `https://api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}`
+      `http://127.0.0.1:8000/v1/users/puuid?gameName=${ganeName}&tagLine=${tagLine}`
     );
     return response.data;
   }
 );
 
-const gameStatsSlice = createSlice({
-  name: "gameStats",
+const getPuuidSlice = createSlice({
+  name: "getPuuid",
   initialState: {
-    stats: {},
+    result: {},
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchGameStats.pending, (state) => {
+      .addCase(fetchPuuid.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchGameStats.fulfilled, (state, action) => {
-        state.stats = action.payload;
+      .addCase(fetchPuuid.fulfilled, (state, action) => {
+        state.result = action.payload;
         state.loading = false;
       })
-      .addCase(fetchGameStats.rejected, (state, action) => {
+      .addCase(fetchPuuid.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
   },
 });
 
-export default gameStatsSlice.reducer;
+export default getPuuidSlice.reducer;

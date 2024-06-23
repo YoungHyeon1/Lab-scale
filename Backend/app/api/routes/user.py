@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from app.core.config import settings
-from app.schema.user import UserKeyResponse,  LeagesInfoResponse
+from app.schema.user import UserInfoResponse,  LeagesInfoResponse
 from lib_commons.models.user_matches import Users, user_leagues, League
 from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
@@ -91,8 +91,10 @@ def update_user_info(info: dict, summoner: dict, db: SessionDep):
         update_user.summoner_level = summoner['summonerLevel']
         update_user.game_name = info['gameName']
         update_user.tag_line = info['tagLine']
+        return_user=update_user
     finally:
         db.commit()
+
 
 def update_user_request(info: dict, db: SessionDep):
     summoner_response = kr_client.get(
@@ -112,8 +114,6 @@ def update_user_request(info: dict, db: SessionDep):
         update_league(league_info, db)
 
 
-
-
 @router.get("/puuid")
 def get_user_key(
     gameName: str,db: SessionDep, tagLine: str = "KR1"
@@ -129,21 +129,26 @@ def get_user_key(
         ),
         params={"api_key": settings.API_KEY}
     )
+    print(account_response)
     if account_response.status_code != 200:
         raise HTTPException(status_code=404)
     info = account_response.json()
     is_account = db.query(Users).filter(Users.puuid == info["puuid"]).one_or_none()
     if is_account:
-        if (datetime.now() - is_account.revision_date) > timedelta(hours=24):
+        if (datetime.now() - is_account.revision_date) > timedelta(hours=52):
             update_user_request(info, db)
     else:
         update_user_request(info, db)
     
+    user_info = db.query(Users).filter(Users.puuid == info["puuid"]).one()
     db.close()
-    return UserKeyResponse(
-        puuid=info["puuid"],
-        game_name=info["gameName"],
-        tag_line=info["tagLine"],
+    return UserInfoResponse(
+        puuid=user_info.puuid,
+        game_name=user_info.game_name,
+        tag_line=user_info.tag_line,
+        profile_icon_id=user_info.profile_icon_id,
+        revision_date=user_info.revision_date,
+        summoner_level=user_info.summoner_level
     )
 
 
@@ -176,6 +181,7 @@ def get_user_league_info(session: SessionDep, puuid: str) -> list[LeagesInfoResp
             summoner_id=results["Users"].summoner_id,
             league_id=results["League"].league_id,
             queue_type=results["League"].queue_type,
+            tier=results["League"].tier,
             league_points=results["league_points"],
             rank=results["rank"],
             wins=results["wins"],

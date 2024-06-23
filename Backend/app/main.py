@@ -1,19 +1,26 @@
 from fastapi import FastAPI
-from fastapi.routing import APIRoute
-from starlette.middleware.cors import CORSMiddleware
-from app.core.middle_ware import LogRequestsMiddleware
 from app.api.main import api_router
 from app.core.config import settings
+from fastapi.routing import APIRoute
+from fastapi.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
+from app.core.middle_ware import LogRequestsMiddleware
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
-    return f"{route.tags[0]}-{route.name}"
+    tag = route.tags[0] if route.tags else "default"
+    return f"{tag}-{route.name}"
 
 app = FastAPI(
     title='LOL API',
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,
 )
+
+@app.get("/health")
+async def health_check():
+    return JSONResponse(content={"status": "ok"}, status_code=200)
+
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:

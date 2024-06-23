@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import gameStatsReducer from "./gameStatsSlice";
+import getPuuidSliceReducer from "./getPuuidSlice";
+import userLeagueSlice from "./userLeagueSlice";
 
 export const store = configureStore({
   reducer: {
-    gameStats: gameStatsReducer,
+    getPuuid: getPuuidSliceReducer,
+    userLeague: userLeagueSlice,
   },
 });

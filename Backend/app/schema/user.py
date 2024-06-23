@@ -1,9 +1,13 @@
 from pydantic import BaseModel
+from datetime import datetime
 
-class UserKeyResponse(BaseModel):
+class UserInfoResponse(BaseModel):
     puuid: str
     game_name: str
     tag_line: str
+    profile_icon_id: int
+    revision_date: datetime
+    summoner_level: int
 
 
 class LeagesInfoResponse(BaseModel):
@@ -12,6 +16,7 @@ class LeagesInfoResponse(BaseModel):
     league_points: int
     queue_type: str
     rank: str
+    tier: str
     wins: int
     losses: int
     veteran: bool

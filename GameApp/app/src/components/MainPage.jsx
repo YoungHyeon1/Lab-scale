@@ -1,34 +1,31 @@
 import React from "react";
-import { SearchBar } from "./SearchBar";
-import { GameStats } from "./GameStats";
-import PredictionResult from "./PredictionResult";
+import SearchBar from "./SearchBar";
+
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 import SidebarComponent from "./SidebarComponent";
+import recodingOfLolImage from "./assets/Recoding Of LoL 이미지.png";
 
 const MainContainer = styled.div`
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;
-  text-align: center; 
+  text-align: center;
+`;
+
+const StyledImage = styled.img`
+  width: 70%;
+  max-width: 300px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 `;
 
 const MainPage = () => {
-  const { stats } = useSelector((state) => state.gameStats);
-
   return (
     <MainContainer>
       <SidebarComponent />
-      <h1> Recoding Of LoL</h1>
+      <StyledImage src={recodingOfLolImage} alt="Recoding Of LoL" />
       <SearchBar />
-      {stats ? (
-        <div />
-      ) : (
-        <>
-          <GameStats />
-          <PredictionResult />
-        </>
-      )}
     </MainContainer>
   );
 };
