@@ -1,6 +1,7 @@
 import SearchBar from "./SearchBar";
 import SidebarComponent from "./SidebarComponent";
 import styled from "styled-components";
+import PredictSC from "./PredictSC";
 
 const PromoContainer = styled.div`
   padding: 20px;
@@ -106,6 +107,11 @@ const AIPredicPage = () => {
           확보하세요.
         </PromoText>
       </PromoContainer>
+      
+      // 새로넣을버튼
+      <PredictSC />
+
+
       <StatHeader>게임 통계</StatHeader>
       <Table>
         <thead>

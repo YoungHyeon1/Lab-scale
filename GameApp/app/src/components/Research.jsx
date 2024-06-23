@@ -26,12 +26,13 @@ function Research() {
   }, [dispatch, gameName]);
 
   useEffect(() => {
-    if (result) {
+    if (result.puuid !== undefined) {
       dispatch(fetchUserLeague(result.puuid));
     }
   }, [dispatch, result]);
 
   useEffect(() => {
+    console.log(userLeague)
     if (result && userLeague) {
       setProfileData({
         imageUrl: `https://opgg-static.akamaized.net/meta/images/profile_icons/profileIcon${result.profile_icon_id}.jpg`,
