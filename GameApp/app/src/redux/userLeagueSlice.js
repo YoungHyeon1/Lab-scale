@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchUserInfo = createAsyncThunk(
-  "userInfo/fetchUserInfo",
+export const fetchUserLeague = createAsyncThunk(
+  "userLeague/fetchUserLeague",
   async (puuid) => {
     const response = await axios.get(
       `http://127.0.0.1:8000/v1/users/league?puuid=${puuid}`
@@ -11,28 +11,28 @@ export const fetchUserInfo = createAsyncThunk(
   }
 );
 
-const userInfoSlice = createSlice({
-  name: "userInfo",
+const userLeagueSlice = createSlice({
+  name: "userLeague",
   initialState: {
-    userInfo: {},
+    userLeague: {},
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserInfo.pending, (state) => {
+      .addCase(fetchUserLeague.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUserInfo.fulfilled, (state, action) => {
-        state.userInfo = action.payload;
+      .addCase(fetchUserLeague.fulfilled, (state, action) => {
+        state.userLeague = action.payload;
         state.loading = false;
       })
-      .addCase(fetchUserInfo.rejected, (state, action) => {
+      .addCase(fetchUserLeague.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
   },
 });
 
-export default userInfoSlice.reducer;
+export default userLeagueSlice.reducer;

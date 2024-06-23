@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-
-
 const ProfileContainer = styled.div`
   display: flex;
   background: #e4e4e4;
@@ -38,10 +36,18 @@ const SummonerName = styled.div`
   margin-right: 10px;
 `;
 
+const TagName = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: #bdbdbd;
+`;
+
 const LevelBadge = styled.div`
   background-color: #191919;
   color: white;
   padding: 3px 8px;
+  width: 50px;
   border-radius: 15px;
   font-size: 12px;
 `;
@@ -97,19 +103,51 @@ const ProfileCard = ({ profile }) => (
       <ProfileImage src={profile.imageUrl} alt="profile" />
       <SummonerInfo>
         <SummonerName>{profile.name}</SummonerName>
-        <LevelBadge>Lv. {profile.level}</LevelBadge>
+        <TagName>{profile.tag}</TagName>
       </SummonerInfo>
+      <LevelBadge>Lv. {profile.level}</LevelBadge>
       <ButtonContainer>
         <UpdateButton>전적 갱신</UpdateButton>
-        <LastUpdated>최근 업데이트: {profile.lastUpdated}</LastUpdated>
+        <LastUpdated>
+          최근 업데이트: {profile.lastUpdated.split("T")[0]}
+        </LastUpdated>
       </ButtonContainer>
       {/* 백엔드에서 받아올 텍스트 정보 표시 */}
     </LeftSection>
+
+    {profile.leagues.map((league, index) => (
+      <RightSection key={index}>
+        <RankIcon src={league.rankIconUrl} alt="rank icon" />
+        <RankText>
+          {league.tier} {league.division}
+        </RankText>
+        <WinLoss>
+          {league.wins}승 {league.losses}패 ({league.winRate}%)
+        </WinLoss>
+        <RankText>
+          {league.queue_type}
+        </RankText>
+      </RightSection>
+    ))}
+
+    {/* <RightSection>
+      <RankIcon src={profile.rankIconUrl} alt="rank icon" />
+      <RankText>
+        {profile.tier} {profile.division}
+      </RankText>
+      <WinLoss>
+        {profile.wins}승 {profile.losses}패 ({profile.winRate}%)
+      </WinLoss>
+    </RightSection>
     <RightSection>
       <RankIcon src={profile.rankIconUrl} alt="rank icon" />
-      <RankText>{profile.tier} {profile.division}</RankText>
-      <WinLoss>{profile.wins}승 {profile.losses}패 ({profile.winRate}%)</WinLoss>
-    </RightSection>
+      <RankText>
+        {profile.tier} {profile.division}
+      </RankText>
+      <WinLoss>
+        {profile.wins}승 {profile.losses}패 ({profile.winRate}%)
+      </WinLoss>
+    </RightSection> */}
   </ProfileContainer>
 );
 /*
