@@ -135,6 +135,8 @@ def get_user_key(
     info = account_response.json()
     is_account = db.query(Users).filter(Users.puuid == info["puuid"]).one_or_none()
     if is_account:
+        if is_account.revision_date is None:
+            update_user_request(info, db)
         if (datetime.now() - is_account.revision_date) > timedelta(hours=52):
             update_user_request(info, db)
     else:
