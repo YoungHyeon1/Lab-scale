@@ -8,6 +8,8 @@ const SearchContainer = styled.div`
   padding: 8px;
   border-radius: 4px;
   width: 20%; // 원하는 너비 (%)
+  justify-content: space-between; // 버튼과 input 사이 공간 확보
+  flex-shrink: 0;
 `;
 
 const SearchInput = styled.input`
@@ -47,7 +49,7 @@ function PredictSC() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <SearchButton onClick={handleSearch}>검색</SearchButton>
+      <SearchButton onClick={handleSearch}>AI 분석</SearchButton>
     </SearchContainer>
   );
 }

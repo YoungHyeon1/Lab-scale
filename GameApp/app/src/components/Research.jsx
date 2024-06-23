@@ -29,11 +29,10 @@ function Research() {
     if (result.puuid !== undefined) {
       dispatch(fetchUserLeague(result.puuid));
     }
-  }, [dispatch, result]);
+  }, [dispatch, result.puuid, gameName]);
 
   useEffect(() => {
-    console.log(userLeague)
-    if (result && userLeague) {
+    if (userLeague !== undefined) {
       setProfileData({
         imageUrl: `https://opgg-static.akamaized.net/meta/images/profile_icons/profileIcon${result.profile_icon_id}.jpg`,
         level: result.summoner_level,
@@ -53,7 +52,7 @@ function Research() {
         ),
       });
     }
-  }, [result, userLeague]);
+  }, [result, userLeague, ]);
 
   // const profileData = {
   //   imageUrl: `https://opgg-static.akamaized.net/meta/images/profile_icons/profileIcon${result.profile_icon_id}.jpg`,
