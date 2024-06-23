@@ -5,7 +5,8 @@ export const fetchUserLeague = createAsyncThunk(
   "userLeague/fetchUserLeague",
   async (puuid) => {
     const response = await axios.get(
-      `http://labscaleloadblancer-1622503253.ap-northeast-2.elb.amazonaws.com/v1/users/league?puuid=${puuid}`
+      // `http://labscaleloadblancer-1622503253.ap-northeast-2.elb.amazonaws.com/v1/users/league?puuid=${puuid}`
+      `http://localhost:8000/v1/users/league?puuid=${puuid}`
     );
     return response.data;
   }
