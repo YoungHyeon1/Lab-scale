@@ -2,30 +2,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-/*const StyledInput = styled.input`
-  border: none;
-  outline: none;
-  width: 100%;
-  font-size: 16px;
-  color: #555;
-
-  &::placeholder {
-    color: #ccc;
-  }
-`;
-const StyledButton = styled.button`
-  background-color: #6c8bf5;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-`;*/
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
@@ -71,72 +47,6 @@ const SearchButton = styled.button`
   cursor: pointer;
   margin-left: 20px;
 `;
-
-/*const RegionSelect = styled.select`
-  border: none;
-  outline: none;
-  font-size: 16px;
-  color: #212529;
-  background: transparent;
-  margin-right: 20px;
-`;
-const Label = styled.span`
-  font-size: 16px;
-  color: #6c757d;
-  margin-right: 10px;
-`;*/
-
-// const SearchBar = ({ onError }) => {
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const [searchTerm, setSearchTerm] = useState('');
-
-//   let input;
-//   let tag;
-
-//   const handleSearchChange = (event) => {
-//     setSearchTerm(event.target.value);
-//   };
-
-//   const handleSearchClick = () => {
-//     // onSearch({ region, searchTerm });
-//   };
-
-//   const handleSearch = () => {
-
-//     if (input.value) {
-//       let summonerName = input.value + "#" + tag.value;
-//       dispatch(fetchGameStats(summonerName));
-//       input.value = "";
-//     }else{
-//       try {
-//         navigate('/about');
-//         // 검색 로직 예시
-//         throw new Error('검색 오류가 발생했습니다.');
-//       } catch (error) {
-//         onError(error.message);
-//       }
-//     }
-//   };
-//   const handleKeyPress = (e) => {
-//     if (e.key === "Enter") {
-//       handleSearch();
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <StyledInput
-//         ref={(node) => (input = node)}
-//         placeholder="플레이어 이름 + KR1"
-//         onKeyUp={handleKeyPress}
-//       />
-
-//       <StyledButton onClick={handleSearch}>Search</StyledButton>
-//     </div>
-//   );
-
-// };
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");

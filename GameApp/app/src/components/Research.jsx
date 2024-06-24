@@ -1,5 +1,4 @@
 import SidebarComponent from "./SidebarComponent";
-// import { SearchBar } from "./SearchBar";
 import React, { useEffect } from "react";
 import SearchBar from "./SearchBar";
 import ProfileCard from "./module/ProfileCard";

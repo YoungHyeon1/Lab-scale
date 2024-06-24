@@ -19,6 +19,9 @@ app = FastAPI(
 
 @app.get("/health")
 async def health_check():
+    """"
+    Application LoadBlancer Health Chek
+    """
     return JSONResponse(content={"status": "ok"}, status_code=200)
 
 app.add_middleware(

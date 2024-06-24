@@ -83,4 +83,3 @@ settings = Settings(
     BROKER_URL=secrets_aws["MQ_URL"],
     API_KEY=secrets_aws["API_KEY"]
 )
-
