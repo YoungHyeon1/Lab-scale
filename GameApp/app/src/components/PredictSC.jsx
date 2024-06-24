@@ -4,10 +4,13 @@ import styled from 'styled-components';
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
-  background-color: #f0f0f0; // 배경색 (원하는 색상으로 변경)
+  justify-content: center; // 위치 변경
+  background-color: #f0f0f0;
   padding: 8px;
   border-radius: 4px;
-  width: 20%; // 원하는 너비 (%)
+  min-width: 200px; // 최소 너비 설정 (필요에 따라 조절)
+  width: 50%;
+  margin: 0 auto;
 `;
 
 const SearchInput = styled.input`
@@ -47,7 +50,7 @@ function PredictSC() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <SearchButton onClick={handleSearch}>검색</SearchButton>
+      <SearchButton onClick={handleSearch}>AI 분석</SearchButton>
     </SearchContainer>
   );
 }

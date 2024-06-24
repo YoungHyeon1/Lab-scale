@@ -130,7 +130,7 @@ def get_riot_update(
     )
     
     return UpdateResponse(
-        service=request.url.path.split('/')[3],
+        service_name=request.url.path.split('/')[3],
         request_id=request.state.puuid[0],
         task_id=task_id
     )

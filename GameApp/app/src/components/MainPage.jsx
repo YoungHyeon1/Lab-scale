@@ -1,6 +1,5 @@
 import React from "react";
 import SearchBar from "./SearchBar";
-
 import styled from "styled-components";
 import SidebarComponent from "./SidebarComponent";
 import recodingOfLolImage from "./assets/Recoding Of LoL 이미지.png";

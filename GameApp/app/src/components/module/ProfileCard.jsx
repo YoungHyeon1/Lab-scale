@@ -1,5 +1,12 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateRecord,
+  pollTaskStatus,
+  stopPolling,
+} from "../../redux/updateMatchSlice";
+import { fetchMatches } from "../../redux/matchSlice";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -57,14 +64,18 @@ const ButtonContainer = styled.div`
 `;
 
 const UpdateButton = styled.button`
-  background-color: #1f8ecd; // 예시 버튼 색상
+  background-color: #1f8ecd;
   color: white;
   padding: 8px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-`;
 
+  &:disabled {
+    background-color: #ccc; // disabled 상태일 때 배경색 변경
+    cursor: default; // disabled 상태일 때 커서 변경
+  }
+`;
 const LastUpdated = styled.div`
   font-size: 12px;
   color: #555;
@@ -97,80 +108,74 @@ const WinLoss = styled.div`
   color: #555;
 `;
 
-const ProfileCard = ({ profile }) => (
-  <ProfileContainer>
-    <LeftSection>
-      <ProfileImage src={profile.imageUrl} alt="profile" />
-      <SummonerInfo>
-        <SummonerName>{profile.name}</SummonerName>
-        <TagName>{profile.tag}</TagName>
-      </SummonerInfo>
-      <LevelBadge>Lv. {profile.level}</LevelBadge>
-      <ButtonContainer>
-        <UpdateButton>전적 갱신</UpdateButton>
-        <LastUpdated>
-          최근 업데이트: {profile.lastUpdated.split("T")[0]}
-        </LastUpdated>
-      </ButtonContainer>
-      {/* 백엔드에서 받아올 텍스트 정보 표시 */}
-    </LeftSection>
+const ProfileCard = ({ profile }) => {
+  const dispatch = useDispatch();
+  const { is_complete, task_id, isPolling, error } = useSelector(
+    (state) => state.record
+  );
+  // const [complet, setComplete] = useState(false);
+  const result = useSelector((state) => state.getPuuid.result);
+  const pollingRef = useRef(null);
 
-    {profile.leagues.map((league, index) => (
-      <RightSection key={index}>
-        <RankIcon src={league.rankIconUrl} alt="rank icon" />
-        <RankText>
-          {league.tier} {league.division}
-        </RankText>
-        <WinLoss>
-          {league.wins}승 {league.losses}패 ({league.winRate}%)
-        </WinLoss>
-        <RankText>
-          {league.queue_type}
-        </RankText>
-      </RightSection>
-    ))}
+  const handleUpdateRecord = () => {
+    // console.log(complet, task_id);
+    dispatch(updateRecord(result.puuid));
+  };
 
-    {/* <RightSection>
-      <RankIcon src={profile.rankIconUrl} alt="rank icon" />
-      <RankText>
-        {profile.tier} {profile.division}
-      </RankText>
-      <WinLoss>
-        {profile.wins}승 {profile.losses}패 ({profile.winRate}%)
-      </WinLoss>
-    </RightSection>
-    <RightSection>
-      <RankIcon src={profile.rankIconUrl} alt="rank icon" />
-      <RankText>
-        {profile.tier} {profile.division}
-      </RankText>
-      <WinLoss>
-        {profile.wins}승 {profile.losses}패 ({profile.winRate}%)
-      </WinLoss>
-    </RightSection> */}
-  </ProfileContainer>
-);
-/*
-const ProfileContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #f3f4f6;
-  padding: 20px;
-  border-radius: 10px;
-  margin: 20px;
-`;
+  // 폴링 로직
+  useEffect(() => {
+    if (task_id && !is_complete && !pollingRef.current) {
+      pollingRef.current = setInterval(() => {
+        dispatch(pollTaskStatus(task_id));
+      }, 1000); // 5초 간격으로 상태 확인
+    }
+    if (is_complete && pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+      dispatch(fetchMatches({ puuid: result.puuid, index: 1 }));
+      dispatch(stopPolling()); // 상태 정리
+    }
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
+  }, [dispatch, task_id, is_complete, result]);
 
-const ProfileCard = ({ profile }) => (
-  <ProfileContainer>
-    <img
-      src={profile.imageUrl}
-      alt="profile"
-      style={{ width: "100px", height: "100px", borderRadius: "50%" }}
-    />
-    <h2>{profile.name}</h2>
-    <p>{profile.rank}</p>
-  </ProfileContainer>
-);*/
+  return (
+    <ProfileContainer>
+      <LeftSection>
+        <ProfileImage src={profile.imageUrl} alt="profile" />
+        <SummonerInfo>
+          <SummonerName>{profile.name}</SummonerName>
+          <TagName>{profile.tag}</TagName>
+        </SummonerInfo>
+        <LevelBadge>Lv. {profile.level}</LevelBadge>
+        <ButtonContainer>
+          <UpdateButton onClick={handleUpdateRecord} disabled={isPolling}>
+            {isPolling ? "Processing..." : "전적 갱신"}
+          </UpdateButton>
+          <LastUpdated>
+            최근 업데이트: {profile.lastUpdated.split("T")[0]}
+          </LastUpdated>
+        </ButtonContainer>
+        {/* 백엔드에서 받아올 텍스트 정보 표시 */}
+      </LeftSection>
+
+      {profile.leagues.map((league, index) => (
+        <RightSection key={index}>
+          <RankIcon src={league.rankIconUrl} alt="rank icon" />
+          <RankText>
+            {league.tier} {league.division}
+          </RankText>
+          <WinLoss>
+            {league.wins}승 {league.losses}패 ({league.winRate}%)
+          </WinLoss>
+          <RankText>{league.queue_type}</RankText>
+        </RightSection>
+      ))}
+    </ProfileContainer>
+  );
+};
 
 export default ProfileCard;

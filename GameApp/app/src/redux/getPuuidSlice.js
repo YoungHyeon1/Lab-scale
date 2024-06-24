@@ -7,7 +7,8 @@ export const fetchPuuid = createAsyncThunk(
   async (summonerName) => {
     const [ganeName, tagLine = ""] = summonerName.split("-");
     const response = await axios.get(
-      `http://labscaleloadblancer-1622503253.ap-northeast-2.elb.amazonaws.com/v1/users/puuid?gameName=${ganeName}&tagLine=${tagLine}`
+      // `http://labscaleloadblancer-1622503253.ap-northeast-2.elb.amazonaws.com/v1/users/puuid?gameName=${ganeName}&tagLine=${tagLine}`
+      `http://localhost:8000/v1/users/puuid?gameName=${ganeName}&tagLine=${tagLine}`
     );
     return response.data;
   }
@@ -16,7 +17,7 @@ export const fetchPuuid = createAsyncThunk(
 const getPuuidSlice = createSlice({
   name: "getPuuid",
   initialState: {
-    result: {},
+    result: undefined,
     loading: false,
     error: null,
   },

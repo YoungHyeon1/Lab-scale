@@ -108,7 +108,7 @@ const AIPredicPage = () => {
         </PromoText>
       </PromoContainer>
       
-      // 새로넣을버튼
+      
       <PredictSC />
 
 
