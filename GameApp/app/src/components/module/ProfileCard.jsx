@@ -7,6 +7,7 @@ import {
   pollTaskStatus,
   stopPolling,
 } from "../../redux/updateMatchSlice";
+import { fetchMatches } from "../../redux/matchSlice";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -110,29 +111,29 @@ const WinLoss = styled.div`
 
 const ProfileCard = ({ profile }) => {
   const dispatch = useDispatch();
-  const { loading, is_complete, task_id, isPolling, error } = useSelector(
+  const { is_complete, task_id, isPolling, error } = useSelector(
     (state) => state.record
   );
-  const [complet, setComplete] = useState(false);
+  // const [complet, setComplete] = useState(false);
   const result = useSelector((state) => state.getPuuid.result);
   const pollingRef = useRef(null);
 
   const handleUpdateRecord = () => {
-    console.log(complet, task_id);
+    // console.log(complet, task_id);
     dispatch(updateRecord(result.puuid));
   };
+
+  // 폴링 로직
   useEffect(() => {
-    setComplete(isPolling);
-    console.log(isPolling);
     if (task_id && !is_complete && !pollingRef.current) {
       pollingRef.current = setInterval(() => {
-        console.log(isPolling);
         dispatch(pollTaskStatus(task_id));
-      }, 5000); // 5초 간격
+      }, 1000); // 5초 간격으로 상태 확인
     }
     if (is_complete && pollingRef.current) {
       clearInterval(pollingRef.current);
       pollingRef.current = null;
+      dispatch(fetchMatches({ puuid: result.puuid, index: 1 }));
       dispatch(stopPolling()); // 상태 정리
     }
     return () => {
@@ -140,18 +141,8 @@ const ProfileCard = ({ profile }) => {
         clearInterval(pollingRef.current);
       }
     };
-  }, [dispatch, task_id, is_complete, isPolling]);
+  }, [dispatch, task_id, is_complete, result]);
 
-  // 에러 감지
-  useEffect(() => {
-    if (error) {
-      alert("Error occurred: " + error);
-      if (pollingRef.current) {
-        clearInterval(pollingRef.current);
-        pollingRef.current = null;
-      }
-    }
-  }, [error]);
   return (
     <ProfileContainer>
       <LeftSection>
@@ -162,8 +153,8 @@ const ProfileCard = ({ profile }) => {
         </SummonerInfo>
         <LevelBadge>Lv. {profile.level}</LevelBadge>
         <ButtonContainer>
-          <UpdateButton onClick={handleUpdateRecord} disabled={complet}>
-            전적 갱신
+          <UpdateButton onClick={handleUpdateRecord} disabled={isPolling}>
+            {isPolling ? "Processing..." : "전적 갱신"}
           </UpdateButton>
           <LastUpdated>
             최근 업데이트: {profile.lastUpdated.split("T")[0]}

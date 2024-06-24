@@ -15,7 +15,7 @@ export const fetchUserLeague = createAsyncThunk(
 const userLeagueSlice = createSlice({
   name: "userLeague",
   initialState: {
-    userLeague: {},
+    userLeague: null,
     loading: false,
     error: null,
   },

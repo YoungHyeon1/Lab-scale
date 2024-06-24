@@ -77,10 +77,10 @@ get_secret_value_response = secret_client.get_secret_value(SecretId='riot-crawle
 secrets_aws = json.loads(get_secret_value_response['SecretString'])
 
 settings = Settings(
-    # POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"],
-    # POSTGRES_USER=secrets_aws["POSTGRES_USER"],
-    # POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"],
-    # BROKER_URL=secrets_aws["MQ_URL"],
+    POSTGRES_SERVER=secrets_aws["POSTGRES_SERVER"],
+    POSTGRES_USER=secrets_aws["POSTGRES_USER"],
+    POSTGRES_PASSWORD=secrets_aws["POSTGRES_PASSWORD"],
+    BROKER_URL=secrets_aws["MQ_URL"],
     API_KEY=secrets_aws["API_KEY"]
 )
 

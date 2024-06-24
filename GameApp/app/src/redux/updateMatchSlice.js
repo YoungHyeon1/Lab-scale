@@ -4,11 +4,12 @@ import axios from "axios";
 
 export const updateRecord = createAsyncThunk(
   "record/updateRecord",
-  async (puuid, { rejectWithValue }) => {
+  async (puuid, {dispatch, rejectWithValue }) => {
     try {
       const response = await axios.get(
         `http://127.0.0.1:8000/v1/match/update?user_id=${puuid}`
       );
+      dispatch(pollTaskStatus(response.data.task_id));
       return response.data; // { service_name, task_id }
     } catch (error) {
       return rejectWithValue(error.response.data);

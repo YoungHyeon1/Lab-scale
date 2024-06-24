@@ -18,7 +18,8 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const GameList = ({ games }) => {
+const GameList = ({ games, puuid }) => {
+  console.log(games);
   const [show, setShow] = useState(false);
   const [selectedGame, setSelectedGame] = useState(null);
   const handleClose = () => setShow(false);
@@ -31,7 +32,11 @@ const GameList = ({ games }) => {
     <>
       <GameListContainer>
         {games.map((game) => (
-          <GameItems game={game} onClick={() => handleShow(game)} />
+          <GameItems
+            game={game}
+            onClick={() => handleShow(game)}
+            puuid={puuid}
+          />
         ))}
 
         {selectedGame && (

@@ -8,11 +8,10 @@ export const fetchMatches = createAsyncThunk(
       // `http://labscaleloadblancer-1622503253.ap-northeast-2.elb.amazonaws.com/v1/users/matches?puuid=${puuid}`
       `http://localhost:8000/v1/match/?puuid=${puuid}&index=${index}`
     );
-    console.log(response);
-    if (response.status === 404) {
-      return null;
-    } else {
+    if (response.status === 200) {
       return response.data;
+    } else {
+      return null;
     }
   }
 );
@@ -20,7 +19,7 @@ export const fetchMatches = createAsyncThunk(
 const matchesInfoSlice = createSlice({
   name: "match",
   initialState: {
-    matches: [],
+    matches: null,
     loading: false,
     error: null,
   },

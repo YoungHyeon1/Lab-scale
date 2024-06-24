@@ -10,6 +10,7 @@ import { fetchPuuid } from "../redux/getPuuidSlice";
 import { fetchUserLeague } from "../redux/userLeagueSlice";
 import { fetchMatches } from "../redux/matchSlice";
 import { useState } from "react";
+import NotFound from "./module/NotFound";
 
 function Research() {
   const { gameName } = useParams();
@@ -20,8 +21,6 @@ function Research() {
     matches: state.match.matches,
   }));
 
-  const [profileData, setProfileData] = useState(null);
-  const [matchData, setMatchData] = useState(null);
   const [index, setIndex] = useState(1);
 
   useEffect(() => {
@@ -40,49 +39,51 @@ function Research() {
     }
   }, [dispatch, result, index]);
 
-  useEffect(() => {
-    if (result && Array.isArray(userLeague)) {
-      setProfileData({
-        imageUrl: `https://opgg-static.akamaized.net/meta/images/profile_icons/profileIcon${result.profile_icon_id}.jpg`,
-        level: result.summoner_level,
-        lastUpdated: result.revision_date,
-        name: result.game_name,
-        tag: result.tag_line,
-        leagues: userLeague.map(
-          ({ name, tier, rank, leaguePoints, wins, losses, queue_type }) => ({
-            leagueName: name,
-            rankIconUrl: `https://opgg-static.akamaized.net/images/medals_new/${tier.toLowerCase()}.png`,
-            tier,
-            rank,
-            wins,
-            losses,
-            queue_type,
-            winRate: Math.round((wins / (wins + losses)) * 100),
-            points: leaguePoints,
-          })
-        ),
-      });
-    }
-  }, [result, userLeague]);
-
-  useEffect(() => {
-    if (result && Array.isArray(matches)) {
-      setMatchData(matches);
-    }
-  }, [result, matches]);
-
   return (
     <>
       <SidebarComponent />
       <SearchBar />
-      {profileData ? (
+      {result && userLeague ? (
         <>
-          <ProfileCard profile={profileData} />
+          <ProfileCard
+            profile={{
+              imageUrl: `https://opgg-static.akamaized.net/meta/images/profile_icons/profileIcon${result.profile_icon_id}.jpg`,
+              level: result.summoner_level,
+              lastUpdated: result.revision_date,
+              name: result.game_name,
+              tag: result.tag_line,
+              leagues: userLeague.map(
+                ({
+                  name,
+                  tier,
+                  rank,
+                  leaguePoints,
+                  wins,
+                  losses,
+                  queue_type,
+                }) => ({
+                  leagueName: name,
+                  rankIconUrl: `https://opgg-static.akamaized.net/images/medals_new/${tier.toLowerCase()}.png`,
+                  tier,
+                  rank,
+                  wins,
+                  losses,
+                  queue_type,
+                  winRate: Math.round((wins / (wins + losses)) * 100),
+                  points: leaguePoints,
+                })
+              ),
+            }}
+          />
         </>
       ) : (
-        <>NotFound</>
+        <NotFound Text={"이런! 찾으시는 프로필이 존재하지 않습니다."} />
       )}
-      {matchData && <GameList games={matchData} />}
+      {matches ? (
+        <GameList games={matches} puuid={result.puuid} />
+      ) : (
+        <NotFound Text={`찾으시는 매치 정보를 찾을 수 없습니다.`} />
+      )}
     </>
   );
 }

@@ -1,5 +1,4 @@
 import styled, { keyframes } from "styled-components";
-import { useSelector } from "react-redux";
 import { summonerId } from "./summoner_item";
 import nullImage from "../assets/null.png";
 const spin = keyframes`
@@ -70,13 +69,16 @@ const TextWithEllipsis = styled.div`
   text-overflow: ellipsis;
   margin: 5px;
 `;
-const GameItems = ({ game, onClick }) => {
-  const result = useSelector((state) => state.getPuuid.result);
+const GameItems = ({ game, onClick, puuid }) => {
+  // const result = useSelector((state) => state.getPuuid.result);
+  console.log(game);
 
   const my_game = game.participants.find(
-    (participant) => participant.puuid === result.puuid
+    (participant) => participant.puuid === puuid
   );
-
+  if (my_game?.win === undefined) {
+    return <div></div>;
+  }
   const blue_player = game.participants.filter((participant) => {
     return participant.teamId === 100;
   });
@@ -104,7 +106,7 @@ const GameItems = ({ game, onClick }) => {
   }
 
   return (
-    <GameItem key={my_game.id} win={my_game.win} onClick={onClick}>
+    <GameItem win={my_game.win} onClick={onClick}>
       <ChampImage src={createChampionUrl(my_game.championName)} />
       <DataContainer>
         {my_game.kills} / {my_game.deaths} / {my_game.assists}
@@ -236,7 +238,6 @@ const GameItems = ({ game, onClick }) => {
           ))}
         </ItemContainer>
       </LastContainer>
-      <p>{my_game.date}</p>
     </GameItem>
   );
 };
